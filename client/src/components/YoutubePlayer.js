@@ -22,24 +22,33 @@ export default function YouTubePlayer(props) {
         store.setPlayingSongIndex(0)
 	}, [store.currentList]);
 
-    const playerOptions = {
+    let playerOptions = {
         height: '390',
         width: '640',
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
-            autoplay: 1,
+            autoplay: 0,
         },
     };
 
-    // THIS FUNCTION LOADS THE CURRENT SONG INTO
-    // THE PLAYER AND PLAYS IT
+    if (currentSong !== 0)
+    {
+        playerOptions = {
+            height: '390',
+            width: '640',
+            playerVars: {
+                // https://developers.google.com/youtube/player_parameters
+                autoplay: 1,
+            }
+        }
+    }
+
     function loadAndPlayCurrentSong(player) {
         let song = playlist[currentSong];
         player.loadVideoById(song);
         player.playVideo();
     }
 
-    // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
     function nextSong() {
         currentSong++;
         currentSong = currentSong % playlist.length;
@@ -59,8 +68,10 @@ export default function YouTubePlayer(props) {
 
     function onPlayerReady(event) {
         referenceToPlayer.current = event.target;
-        loadAndPlayCurrentSong(event.target);
-        event.target.playVideo();
+        if (currentSong !== 0)
+        {
+            loadAndPlayCurrentSong(event.target);
+        }
     }
 
     function onPlayerStateChange(event) {
