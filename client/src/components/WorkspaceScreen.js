@@ -51,7 +51,7 @@ function WorkspaceScreen() {
             }
         }
     }
-
+    console.log(auth)
     let modalJSX = "";
     let list = "";
     if(!store.currentList)

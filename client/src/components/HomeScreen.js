@@ -45,20 +45,20 @@ const HomeScreen = () => {
 			<Grid container>
 				<Grid item xs={12}>
     				<Toolbar sx={{bgcolor: '#3d5a80'}} variant="dense">
-						<HomeIcon style={{ marginRight: 20 }}></HomeIcon>
-						<GroupsIcon style={{ marginRight: 20 }} ></GroupsIcon>
-						<PersonIcon style={{ marginRight: 350 }}></PersonIcon>
+						<HomeIcon style={{ marginRight: '2%' }}></HomeIcon>
+						<GroupsIcon style={{ marginRight: '2%' }} ></GroupsIcon>
+						<PersonIcon style={{ marginRight: '33%' }}></PersonIcon>
 						<TextField 
 							label="Search" 
 							variant="filled"
-							style={{ marginRight: 400 }}>
+							style={{ marginRight: '40%' }}>
 						</TextField>
 						<Typography>SORT BY</Typography>
 						<SortIcon style={{ marginLeft: "auto" }}> </SortIcon>
     				</Toolbar>
 				</Grid>
 			<Grid item xs={12} sm={6}>
-				<List disablePadding sx={{ width: '100%', maxHeight: '68.5vh', overflow: "hidden", overflowY: "scroll", }}>
+				<List disablePadding sx={{ width: '100%', height: '68.5vh', overflow: "hidden", overflowY: "scroll", }}>
 				{
 					store.idNamePairs.map((pair) => (
 						<ListCard

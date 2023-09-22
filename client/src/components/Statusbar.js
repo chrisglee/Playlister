@@ -19,7 +19,7 @@ function Statusbar() {
     {
         statusBarElement =
         <div id="playlister-statusbar">
-            <Typography variant="h4">{text}</Typography>
+            {/* <Typography variant="h4">{text}</Typography> */}
         </div>
     }
     return (
