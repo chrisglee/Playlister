@@ -19,6 +19,7 @@ export default function YouTubePlayer(props) {
 
     useEffect(() => {
         setCurrentSong(0)
+        store.setPlayingSongIndex(0)
 	}, [store.currentList]);
 
     const playerOptions = {
@@ -43,6 +44,7 @@ export default function YouTubePlayer(props) {
         currentSong++;
         currentSong = currentSong % playlist.length;
         setCurrentSong(currentSong)
+        store.setPlayingSongIndex(currentSong)
     }
 
     function prevSong() {
@@ -52,6 +54,7 @@ export default function YouTubePlayer(props) {
             currentSong = playlist.length - 1;
         }
         setCurrentSong(currentSong)
+        store.setPlayingSongIndex(currentSong)
     }
 
     function onPlayerReady(event) {

@@ -5,6 +5,8 @@ function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
     const { song, index } = props;
+    
+    console.log(store.playingSongIndex)
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -44,6 +46,17 @@ function SongCard(props) {
     }
 
     let cardClass = "list-card unselected-list-card";
+    if (store.currentList.published)
+    {
+        cardClass = "published-song-card"
+        console.log(index)
+        console.log(store.currentList.playingSongIndex)
+        if (index === store.playingSongIndex)
+        {
+            cardClass = "published-selected-song-card"
+        }
+    }
+
     let cardElement = 
         <div
             key={index}
