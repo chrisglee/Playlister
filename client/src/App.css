@@ -338,7 +338,7 @@ input {
   font-size: 28pt;
 }
 
-.modal-south {
+.modal-south, #confirm-cancel-container {
   display:flex;
   flex-direction: row;
   background-color: lightgray;
