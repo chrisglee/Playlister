@@ -13,7 +13,6 @@ import { Typography } from '@mui/material';
 export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
-    let {previousPlayed, addToPreviousSongs} = useState([])
     const {playlist, list} = props;
     const referenceToPlayer = useRef(null);
     let [currentSong, setCurrentSong] = useState(0);
@@ -70,6 +69,7 @@ export default function YouTubePlayer(props) {
     }
 
     function onPlayerReady(event) {
+        console.log("ready")
         referenceToPlayer.current = event.target;
         if (currentSong !== 0)
         {
@@ -78,13 +78,35 @@ export default function YouTubePlayer(props) {
     }
 
     function onPlayerStateChange(event) {
+        // console.log(playerStatus)
         let playerStatus = event.data;
         let player = event.target;
-        if (playerStatus === 0) 
-        {
+        // if (playerStatus === 0) 
+        // {
+        //     nextSong();
+        //     loadAndPlayCurrentSong(player);
+        // } 
+        if (playerStatus === -1) {
+            // VIDEO UNSTARTED
+            console.log("-1 Video unstarted");
+        } else if (playerStatus === 0) {
+            // THE VIDEO HAS COMPLETED PLAYING
+            console.log("0 Video ended");
             nextSong();
             loadAndPlayCurrentSong(player);
-        } 
+        } else if (playerStatus === 1) {
+            // THE VIDEO IS PLAYED
+            console.log("1 Video played");
+        } else if (playerStatus === 2) {
+            // THE VIDEO IS PAUSED
+            console.log("2 Video paused");
+        } else if (playerStatus === 3) {
+            // THE VIDEO IS BUFFERING
+            console.log("3 Video buffering");
+        } else if (playerStatus === 5) {
+            // THE VIDEO HAS BEEN CUED
+            console.log("5 Video cued");
+        }
     }
 
     function playVideo()
@@ -130,6 +152,7 @@ export default function YouTubePlayer(props) {
                 </Grid>
                 <Grid item xs={13}>
                 <YouTube
+                    key={store.currentList._id}
                     videoId={playlist[currentSong]}
                     opts={playerOptions}
                     onReady={onPlayerReady}
