@@ -28,15 +28,20 @@ import Tabs from '@mui/material/Tabs';
 */
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
-	const [tabIndex, setTabIndex] = useState(0);
+	const [tabIndex, setCurrentTab] = useState(0);
+	const [searchText, setSearchText] = useState("");
 
-	const handleTabChange = (event, newTabIndex) => {
-		setTabIndex(newTabIndex);
+	const handleTabChange = (event, newTab) => {
+		setCurrentTab(newTab);
 	  };
 
 	useEffect(() => {
-		store.loadIdNamePairs(store.currentPage);
-	}, [store.currentPage]);
+		store.loadIdNamePairs();
+		if(store.currentSearchCriteria === null)
+		{
+			setSearchText("");
+		}
+	}, [store.currentPage, store.currentSearchCriteria]);
 
 	function handleCreateNewList() {
 		store.createNewList();
@@ -49,6 +54,17 @@ const HomeScreen = () => {
 			store.changeCurrentPage(pageType);
 		}
 	}
+
+	function handleUpdateSearchText(event) {
+        setSearchText(event.target.value);
+    }
+
+	function handleKeyPress(event) {
+        if (event.code === "Enter") {
+			store.changeSearchCriteria(searchText)
+			event.target.blur();
+        }
+    }	
 
 	let listCard = "";
 	if (store) {
@@ -63,6 +79,9 @@ const HomeScreen = () => {
 							fullWidth
 							label="Search" 
 							variant="filled"
+							value={searchText}
+							onKeyPress={handleKeyPress}
+							onChange={handleUpdateSearchText}
 							sx={{ marginRight: '20%', input: { color: 'white' } }}>
 						</TextField>
 						<Typography sx={{ color: 'white' }}>SORT BY</Typography>
@@ -89,6 +108,18 @@ const HomeScreen = () => {
         				<Tab label="Player" />
         				<Tab label="Comments" />
       				</Tabs>
+					  <Box>
+						{tabIndex === 0 && (
+          				<Box>
+            				PLAYER
+          				</Box>
+       					)}
+        				{tabIndex === 1 && (
+          				<Box>
+            				COMMENTS
+          				</Box>
+        				)}
+					</Box>
 				</Box>
 			</Grid>
 		</Grid>
