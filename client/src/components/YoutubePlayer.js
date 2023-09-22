@@ -43,12 +43,18 @@ export default function YouTubePlayer(props) {
 
     if (currentSong !== 0)
     {
-        playerOptions = {
-            height: '390',
-            width: '640',
-            playerVars: {
-                // https://developers.google.com/youtube/player_parameters
-                autoplay: 1,
+        if (store.currentList)
+        {
+            if (store.currentList.published)
+            {
+                playerOptions = {
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                        // https://developers.google.com/youtube/player_parameters
+                        autoplay: 1,
+                    }
+                }
             }
         }
     }
