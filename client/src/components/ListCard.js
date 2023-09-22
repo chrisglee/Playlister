@@ -28,7 +28,6 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
 
-    console.log(store.currentExpandedList)
     function handleLoadList(event, id) {
         event.stopPropagation();
         console.log("handleLoadList for " + id);
@@ -39,7 +38,7 @@ function ListCard(props) {
 
             console.log("load " + event.target.id);
 
-            // CHANGE THE CURRENT LIST
+            // LOAD THE CURRENT LIST
             if (!selected)
             {
                 store.updateAttributePlaylist(id, null, "LISTENS"); //This works
@@ -59,12 +58,11 @@ function ListCard(props) {
 
             console.log("expand " + event.target.id);
 
-            // SELECT THE CURRENT LIST
+            // EXPAND AND LOAD THE CURREENT LIST
             if (store.currentList)
             {
                 if (store.currentList._id !== id)
                 {
-                    // store.updateAttributePlaylist(id, null, "LISTENS"); //This does not because of expand list
                     store.clearAllTransactions();
                 }
             }

@@ -43,7 +43,6 @@ const HomeScreen = () => {
 		{
 			setSearchText("");
 		}
-		console.log("from homescreen " + store.currentSortType)
 	}, [store.currentPage, store.currentSearchCriteria, store.currentSortType]);
 
 	function handleCreateNewList() {
@@ -162,17 +161,19 @@ const HomeScreen = () => {
 			{
 				setCurrentTab(0)
 			}
-			if(store.currentList.songs)
+			if(store.currentList)
 			{
-				let songLinkArray = []
-				for (let song in store.currentList.songs)
-				{
-					songLinkArray.push(song.youTubeId)
-				}
-				player =
-				<YouTubePlayer 
-					givenPlaylist={songLinkArray}
-				/>
+					let songLinkArray = []
+					for (let song in store.currentList.songs)
+					{
+						songLinkArray.push(store.currentList.songs[song].youTubeId)
+					}
+					player =
+					<YouTubePlayer 
+						playlist={songLinkArray}
+						id={store.currentList._id}
+					/>
+
 			}
 		}
 	}
@@ -246,7 +247,17 @@ const HomeScreen = () => {
 					  <Box>
 						{tabIndex === 0 && (
           				<Box>
-            				{/* {player} */}
+							<Grid container>
+								<Grid item xs={1}>
+								
+								</Grid> 
+								<Grid item sx={{marginTop: '50px'}} xs={10}>
+								{player}
+								</Grid> 
+								<Grid item xs={1}>
+								
+								</Grid> 
+							</Grid>
           				</Box>
        					)}
         				{tabIndex === 1 && (
