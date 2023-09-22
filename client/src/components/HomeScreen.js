@@ -308,8 +308,8 @@ const HomeScreen = () => {
         				<Tab label="Comments"/>
       				</Tabs>
 					  <Box>
-						{tabIndex === 0 && (
-          				<Box>
+						{(tabIndex === 0 || tabIndex === 1)&& (
+          				<Box display={tabIndex === 1 ? "none" : "block"}>
 							<Grid container>
 								<Grid item xs={1}>
 								
