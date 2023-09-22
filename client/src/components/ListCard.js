@@ -60,6 +60,13 @@ function ListCard(props) {
             console.log("select " + event.target.id);
 
             // SELECT THE CURRENT LIST
+            if (store.currentList)
+            {
+                if (store.currentList._id !== id)
+                {
+                    store.clearAllTransactions();
+                }
+            }
             store.expandList(id);
         }
     }
