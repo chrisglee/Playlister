@@ -10,6 +10,7 @@ import Fab from '@mui/material/Fab'
 import Grid from '@mui/material/Grid';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,32 +29,43 @@ import Tabs from '@mui/material/Tabs';
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
 	const [tabIndex, setTabIndex] = useState(0);
+
 	const handleTabChange = (event, newTabIndex) => {
 		setTabIndex(newTabIndex);
 	  };
 
 	useEffect(() => {
-		store.loadIdNamePairs();
-	}, []);
+		store.loadIdNamePairs(store.currentPage);
+	}, [store.currentPage]);
 
 	function handleCreateNewList() {
 		store.createNewList();
 	}
+
+	function changeCurrentPage(pageType)
+	{
+		if (pageType !== store.currentPage)
+		{
+			store.changeCurrentPage(pageType);
+		}
+	}
+
 	let listCard = "";
 	if (store) {
 		listCard = 
 			<Grid container>
 				<Grid item xs={12}>
     				<Toolbar sx={{bgcolor: '#3d5a80'}} variant="dense">
-						<HomeIcon style={{ marginRight: '2%' }}></HomeIcon>
-						<GroupsIcon style={{ marginRight: '2%' }} ></GroupsIcon>
-						<PersonIcon style={{ marginRight: '33%' }}></PersonIcon>
+						<IconButton onClick={() => {changeCurrentPage("HOME_PAGE")}}><HomeIcon style={{ color: store.currentPage === "HOME_PAGE" ? '#7CFC00' : 'black'}}></HomeIcon></IconButton>
+						<IconButton onClick={() => {changeCurrentPage("SEARCH_BY_PLAYLIST")}}><GroupsIcon style={{ marginRight: '2%', color: store.currentPage === "SEARCH_BY_PLAYLIST" ? '#7CFC00' : 'black' }} ></GroupsIcon></IconButton>
+						<IconButton style={{ marginRight: '20%'}} onClick={() => {changeCurrentPage("SEARCH_BY_USER")}}><PersonIcon style={{ color: store.currentPage === "SEARCH_BY_USER" ? '#7CFC00' : 'black' }}></PersonIcon></IconButton>
 						<TextField 
+							fullWidth
 							label="Search" 
 							variant="filled"
-							style={{ marginRight: '40%' }}>
+							sx={{ marginRight: '20%', input: { color: 'white' } }}>
 						</TextField>
-						<Typography>SORT BY</Typography>
+						<Typography sx={{ color: 'white' }}>SORT BY</Typography>
 						<SortIcon style={{ marginLeft: "auto" }}> </SortIcon>
     				</Toolbar>
 				</Grid>

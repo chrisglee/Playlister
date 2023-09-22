@@ -28,9 +28,6 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
 
-    console.log(selected)
-    console.log(idNamePair)
-
     function handleLoadList(event, id) {
         event.stopPropagation();
         console.log("handleLoadList for " + id);
