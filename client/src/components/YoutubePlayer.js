@@ -1,7 +1,6 @@
 import YouTube from 'react-youtube';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { GlobalStoreContext } from '../store'
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -15,9 +14,11 @@ export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
     const {playlist, list} = props;
+    const referenceToPlayer = useRef(null);
     let [currentSong, setCurrentSong] = useState(0);
 
     useEffect(() => {
+        console.log(store.currentList)
         setCurrentSong(0)
 	}, [store.currentList]);
 
@@ -39,44 +40,50 @@ export default function YouTubePlayer(props) {
     }
 
     // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
-    function incSong() {
+    function nextSong() {
         currentSong++;
         currentSong = currentSong % playlist.length;
         setCurrentSong(currentSong)
     }
 
+    function prevSong() {
+        currentSong--;
+        if (currentSong < 0)
+        {
+            currentSong = playlist.length - 1;
+        }
+        setCurrentSong(currentSong)
+    }
+
     function onPlayerReady(event) {
+        referenceToPlayer.current = event.target;
         loadAndPlayCurrentSong(event.target);
         event.target.playVideo();
     }
 
-    // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
-    // CHANGES. NOTE THAT playerStatus WILL HAVE A DIFFERENT INTEGER
-    // VALUE TO REPRESENT THE TYPE OF STATE CHANGE. A playerStatus
-    // VALUE OF 0 MEANS THE SONG PLAYING HAS ENDED.
     function onPlayerStateChange(event) {
         let playerStatus = event.data;
         let player = event.target;
-        if (playerStatus === -1) {
-            // VIDEO UNSTARTED
-            console.log("-1 Video unstarted");
-        } else if (playerStatus === 0) {
-            // THE VIDEO HAS COMPLETED PLAYING
-            console.log("0 Video ended");
-            incSong();
+        if (playerStatus === 0) 
+        {
+            nextSong();
             loadAndPlayCurrentSong(player);
-        } else if (playerStatus === 1) {
-            // THE VIDEO IS PLAYED
-            console.log("1 Video played");
-        } else if (playerStatus === 2) {
-            // THE VIDEO IS PAUSED
-            console.log("2 Video paused");
-        } else if (playerStatus === 3) {
-            // THE VIDEO IS BUFFERING
-            console.log("3 Video buffering");
-        } else if (playerStatus === 5) {
-            // THE VIDEO HAS BEEN CUED
-            console.log("5 Video cued");
+        } 
+    }
+
+    function playVideo()
+    {
+        if (referenceToPlayer.current.getPlayerState() !== 1)
+        {
+            referenceToPlayer.current.playVideo();
+        }
+    }
+
+    function pauseVideo()
+    {
+        if (referenceToPlayer.current.getPlayerState() !== 2)
+        {
+            referenceToPlayer.current.pauseVideo();
         }
     }
 
@@ -117,16 +124,16 @@ export default function YouTubePlayer(props) {
                 </Grid>
                 <Grid item xs={5}> 
                 <Box sx={{bgcolor: "#fffff1", borderRadius: '16px', alignItems: "center", justifyContent: "center"}}>
-                    <IconButton>
+                    <IconButton onClick={() => prevSong()}>
                         <SkipPreviousIcon style={{fontSize: '30pt', color: 'black'}}></SkipPreviousIcon>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => playVideo()}>
                         <PlayArrowIcon style={{fontSize: '30pt', color: 'black'}}></PlayArrowIcon>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => pauseVideo()}>
                         <PauseIcon style={{fontSize: '30pt', color: 'black'}}></PauseIcon>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => nextSong()}>
                         <SkipNextIcon style={{fontSize: '30pt', color: 'black'}}></SkipNextIcon>
                     </IconButton>
                 </Box>
