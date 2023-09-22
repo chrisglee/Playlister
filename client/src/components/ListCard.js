@@ -27,6 +27,7 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
+    console.log(idNamePair)
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -134,25 +135,25 @@ function ListCard(props) {
                 <ThumbUpIcon  style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbUpIcon>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography style={{fontSize:'24pt'}}> 0 </Typography>
+                <Typography style={{fontSize:'24pt'}}> {idNamePair.numLikes} </Typography>
                 </Grid>
                 <Grid item xs={1}>
                 <ThumbDownIcon style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbDownIcon>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography style={{fontSize:'24pt'}}> 0 </Typography>
+                <Typography style={{fontSize:'24pt'}}> {idNamePair.numDislikes} </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: User </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUser} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}
                 </Grid>
                 <Grid item xs={6}>
-                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Published: 0 </Typography>
+                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Published: {idNamePair.publishDate} </Typography>
                 </Grid>
                 <Grid item xs={5}>
-                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Listens: 0 </Typography>
+                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Listens: {idNamePair.listens} </Typography>
                 </Grid>
                 <Grid item xs={1}>
                 {iconToggle}

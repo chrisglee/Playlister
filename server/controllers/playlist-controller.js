@@ -129,9 +129,21 @@ getPlaylistPairs = async (req, res) => {
                     let pairs = [];
                     for (let key in playlists) {
                         let list = playlists[key];
+                        //MORE LIKE LITERALLY EVERYTHING
                         let pair = {
                             _id: list._id,
-                            name: list.name
+                            name: list.name,
+                            ownerEmail: list.ownerEmail,
+                            ownerUser: list.ownerUser,
+                            numLikes: list.numLikes,
+                            userLikes: list.userLikes,
+                            numDislikes: list.numDislikes,
+                            userDislikes: list.userDislikes,
+                            listens: list.listens,
+                            published: list.published,
+                            publishDate: list.publishDate,
+                            comments: list.comments,
+                            songs: list.songs
                         };
                         pairs.push(pair);
                     }
