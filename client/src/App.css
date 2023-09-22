@@ -212,7 +212,8 @@ body {
   background-color: var(--swatch-complement);
 }
 
-.published-selected-song-card
+.published-selected-song-card,
+.selected-song-card
 {
   font-size: 18pt;
   margin: 10px;
@@ -230,7 +231,8 @@ body {
   pointer-events: none;
 }
 
-.unselected-list-card:hover {
+.unselected-list-card:hover,
+.selected-song-card:hover {
   cursor: pointer;
   background-color: var(--swatch-contrast);
   color: white;

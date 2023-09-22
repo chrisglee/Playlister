@@ -52,6 +52,13 @@ function SongCard(props) {
             cardClass = "published-selected-song-card"
         }
     }
+    else
+    {
+        if (index === store.playingSongIndex)
+        {
+            cardClass = "selected-song-card"
+        }
+    }
 
     let cardElement = 
         <div
