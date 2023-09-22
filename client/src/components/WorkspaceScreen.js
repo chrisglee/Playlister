@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import SongCard from './SongCard.js'
 import MUIEditSongModal from './MUIEditSongModal'
@@ -20,6 +20,37 @@ function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const history = useHistory();
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+      }, []); 
+
+    function handleKeyDown(event)
+    {
+        //console.log( event.keyCode ) 
+        //ctrl = ctrlKey, z = 90, x = 89
+        if (event.keyCode === 90 && event.ctrlKey)
+        {
+            let canUndo = store.canUndo();
+            let undoButton = document.getElementById("undo-button")
+            if (canUndo && (undoButton.disabled === false))
+            {
+                store.undo();
+            }
+        }
+        else if (event.keyCode === 89 && event.ctrlKey)
+        {
+            let canRedo = store.canRedo();
+            let redoButton = document.getElementById("redo-button")
+            if (canRedo && (redoButton.disabled === false))
+            {
+                store.redo();
+            }
+        }
+    }
 
     let modalJSX = "";
     let list = "";
