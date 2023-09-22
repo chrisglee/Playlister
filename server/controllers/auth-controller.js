@@ -232,28 +232,6 @@ registerUser = async (req, res) => {
             })
         }
 
-
-
-        // LOGIN THE USER
-        // const token = auth.signToken(savedUser._id);
-        // console.log("token:" + token);
-
-        // await res.cookie("token", token, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: "none"
-        // }).status(200).json({
-        //     success: true,
-        //     user: {
-        //         userName: savedUser.userName,
-        //         firstName: savedUser.firstName,
-        //         lastName: savedUser.lastName,  
-        //         email: savedUser.email              
-        //     }
-        // })
-
-        // console.log("token sent");
-
     } catch (err) {
         console.error(err);
         res.status(500).send();

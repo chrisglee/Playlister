@@ -47,8 +47,6 @@ function SongCard(props) {
     if (store.currentList.published)
     {
         cardClass = "published-song-card"
-        console.log(index)
-        console.log(store.currentList.playingSongIndex)
         if (index === store.playingSongIndex)
         {
             cardClass = "published-selected-song-card"

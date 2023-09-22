@@ -455,7 +455,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    currentExpandedList: store.currentExpandedList,
+                    currentExpandedList: payload.expandedPlaylist,
                     currentPage: store.currentPage,
                     currentSearchCriteria: store.currentSearchCriteria,
                     currentSortType: store.currentSortType,
@@ -1392,15 +1392,18 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) 
             {
                 let playlist = response.data.playlist;
+                let flag = false
                 if (updateType === UpdateType.LIKES)
                 {
                     if (store.currentList === null)
                     {
                         playlist.listens++
+                        flag = true
                     }
                     else if (store.currentList._id !== id)
                     {
                         playlist.listens++
+                        flag = true
                     }
                     if (!playlist.userLikes.includes(user))
                     {
@@ -1425,10 +1428,12 @@ function GlobalStoreContextProvider(props) {
                     if (store.currentList === null)
                     {
                         playlist.listens++
+                        flag = true
                     }
                     else if (store.currentList._id !== id)
                     {
                         playlist.listens++
+                        flag = true
                     }
                     if (!playlist.userDislikes.includes(user))
                     {
@@ -1536,14 +1541,31 @@ function GlobalStoreContextProvider(props) {
                                 {
                                     pairsArray = []
                                 }
-                                storeReducer({
-                                type: GlobalStoreActionType.UPDATE_PLAYLIST,
-                                payload: 
+                                if (flag === false)
                                 {
-                                    pairsArray: pairsArray,
-                                    playlist: playlist,
+                                    storeReducer({
+                                        type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                                        payload: 
+                                        {
+                                            pairsArray: pairsArray,
+                                            playlist: playlist,
+                                            expandedPlaylist: store.expandedPlaylist
+                                        }
+                                        });
                                 }
-                                });
+                                else
+                                {
+                                    storeReducer({
+                                        type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                                        payload: 
+                                        {
+                                            pairsArray: pairsArray,
+                                            playlist: playlist,
+                                            expandedPlaylist: null
+                                        }
+                                        });
+                                }
+
                             }
                             else
                             {
