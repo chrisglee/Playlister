@@ -34,6 +34,7 @@ function ListCard(props) {
 		if (store.currentEditString === null)
         {
             setEditActive(false)
+            store.loadIdNamePairs();
         }
 	}, [store.currentEditString]);
 
@@ -51,7 +52,7 @@ function ListCard(props) {
             if (!selected)
             {
                 store.updateAttributePlaylist(id, null, "LISTENS"); //This works
-                store.setCurrentList(id);
+                // store.setCurrentList(id);
                 store.clearAllTransactions();
             }
         }

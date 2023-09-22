@@ -523,22 +523,94 @@ function GlobalStoreContextProvider(props) {
                             payload: { text: newName }
                         });
                     }
-                    async function updateList(playlist) 
-                    {
+                    async function updateList(playlist) {
                         response = await api.updatePlaylistById(playlist._id, playlist);
                         if (response.data.success) {
                             async function getListPairs(playlist) {
-                                response = await api.getPlaylistPairs();
-                                if (response.data.success) {
+                                if (store.currentPage === CurrentPage.HOME_PAGE)
+                                {
+                                    response = await api.getPlaylistPairs();
+                                }
+                                else
+                                {
+                                    response = await api.getAllPlaylists();
+                                }
+                                if (response.data.success) 
+                                {
                                     let pairsArray = response.data.idNamePairs;
-                                    storeReducer({
-                                        type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                        payload: {
-                                            playlist: playlist,
-                                            text: newName
+                                    if (store.currentSearchCriteria !== null)
+                                    {
+                                        if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
+                                        {
+                                            pairsArray = pairsArray.filter(function (playlist) {
+                                                return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                                });
                                         }
+                                        else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
+                                        {
+                                            pairsArray = pairsArray.filter(function (playlist) {
+                                                return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                                });
+                                        }
+                                    }
+                                    switch (store.currentSortType)
+                                    {
+                                        case CurrentSort.CREATION_DATE:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
+                                            break;
+                                        }
+                                        case CurrentSort.LAST_EDIT_DATE:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
+                                            break;
+                                        }
+                                        case CurrentSort.NAME:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
+                                            break;
+                                        }
+                                        case CurrentSort.PUBLISH_DATE:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
+                                            break;
+                                        }
+                                        case CurrentSort.LISTENS:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
+                                            break;
+                                        }
+                                        case CurrentSort.LIKES:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
+                                            break;
+                                        }
+                                        case CurrentSort.DISLIKES:
+                                        {
+                                            pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
+                                            break;
+                                        }
+                                        default: //usually defualt is null anyways
+                                        {
+                                            pairsArray = pairsArray //bsaically no change
+                                        }
+                                    }
+                                    if (store.currentSearchCriteria === "")
+                                    {
+                                        pairsArray = []
+                                    }
+                                    storeReducer({
+                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                    payload: 
+                                    {
+                                        playlist: playlist,
+                                        text: null
+                                    }
                                     });
-                                    store.loadIdNamePairs();
+                                }
+                                else
+                                {
+                                    console.log("API FAILED TO GET THE LIST PAIRS");
                                 }
                             }
                             getListPairs(playlist);
@@ -613,6 +685,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
     store.loadIdNamePairs = async function () 
     {
+        console.log("load id name pairs")
         async function asyncLoadIdNamePairs() 
         {
             let response = ""
@@ -774,6 +847,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
     store.setCurrentList = function (id) {
+        console.log("setting list")
         async function asyncSetCurrentList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
@@ -1176,6 +1250,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTIONS CHANGES THE LIKE COUNT
     store.updateAttributePlaylist = function (id, user, updateType, commentContent) {
         // GET THE LIST
+        console.log("updating playlist")
         async function updateAttributePlaylist(id, user, updateType, commentContent) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) 

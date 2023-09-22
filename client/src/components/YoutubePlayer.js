@@ -14,15 +14,12 @@ import { Typography } from '@mui/material';
 export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
-    const {playlist, id} = props;
+    const {playlist, list} = props;
+
     const [value, setValue] = useState("");
-    useEffect(() => { 
-        if(store.currentList)
-        {
-            setValue(store.currentList._id) 
-            console.log(store.currentList._id)
-        }
-    }, [store.currentList])
+    // useEffect(() => { 
+    //     console.log(store.currentList)
+    // }, [store.currentList])
     
     // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
     // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO

@@ -47,6 +47,8 @@ const HomeScreen = () => {
 		}
 	}, [store.currentPage, store.currentSearchCriteria, store.currentSortType]);
 
+	console.log(store.currentList)
+
 	function handleCreateNewList() {
 		store.createNewList();
 	}
@@ -203,7 +205,7 @@ const HomeScreen = () => {
 					player =
 					<YouTubePlayer 
 						playlist={songLinkArray}
-						id={store.currentList._id}
+						list={store.currentList}
 					/>
 
 			}
