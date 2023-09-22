@@ -53,7 +53,7 @@ const HomeScreen = () => {
     				</Toolbar>
 				</Grid>
 			<Grid item xs={12} sm={7}>
-				<List disablePadding sx={{ width: '100%', height: '90%', bgcolor: 'background.paper', overflow: "hidden", overflowY: "scroll", }}>
+				<List disablePadding sx={{ width: '100%', height: '90%', overflow: "hidden", overflowY: "scroll", }}>
 				{
 					store.idNamePairs.map((pair) => (
 						<ListCard
@@ -66,7 +66,7 @@ const HomeScreen = () => {
 				</List>
 			</Grid>
 			<Grid item xs={12} sm={5}>
-				<Box sx={{ width: '100%', height: '90%', bgcolor: 'background.paper'}}>
+				<Box sx={{ width: '100%', height: '90%'}}>
 					hello
 				</Box>
 			</Grid>

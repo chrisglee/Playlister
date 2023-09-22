@@ -21,7 +21,7 @@ body {
 }
 
 #root {
-  background-color: var(--swatch-primary);
+  background-image: linear-gradient(to bottom,#e0fbfc, #5eb7c5);
   font-family: "Lexend Exa";
   position: absolute;
   width: 80%;
@@ -38,25 +38,9 @@ body {
   left: 0%;
 }
 
-#top5-banner {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 10%;
-  float: left;
-  background-image: linear-gradient(to bottom, #b8b808, #636723);
-  color: white;
-  font-size: 48pt;
-  border-color: black;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 10px;
-}
-
 /* SPLASH SCREEN COMPONENTS */
 #splash-screen {
-  background-image: linear-gradient(to bottom, #b6b6ce, #6c68ca);
+  background-image: linear-gradient(to bottom,#e0fbfc, #5eb7c5);
   color: white;
   font-size: 5vw;
   border-color: black;
@@ -80,14 +64,15 @@ body {
 #splash-description
 {
   font-size: 18pt;
+  color: black;
   align-items: center;
   justify-content: center;
 }
 
 #splash-credit
 {
-  top: 80%;
   font-size: 12pt;
+  color: black;
   align-items: center;
   justify-content: center;
 }
