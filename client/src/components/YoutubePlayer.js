@@ -13,6 +13,7 @@ import { Typography } from '@mui/material';
 export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
+    let {previousPlayed, addToPreviousSongs} = useState([])
     const {playlist, list} = props;
     const referenceToPlayer = useRef(null);
     let [currentSong, setCurrentSong] = useState(0);
@@ -54,6 +55,7 @@ export default function YouTubePlayer(props) {
         currentSong = currentSong % playlist.length;
         setCurrentSong(currentSong)
         store.setPlayingSongIndex(currentSong)
+        loadAndPlayCurrentSong(referenceToPlayer.current)
     }
 
     function prevSong() {
@@ -64,6 +66,7 @@ export default function YouTubePlayer(props) {
         }
         setCurrentSong(currentSong)
         store.setPlayingSongIndex(currentSong)
+        loadAndPlayCurrentSong(referenceToPlayer.current)
     }
 
     function onPlayerReady(event) {
