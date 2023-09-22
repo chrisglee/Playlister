@@ -165,7 +165,7 @@ body {
   float: left;
 }
 
-#list-selector-list, #playlist-cards {
+#list-selector-list {
   position: absolute;
   left: 0%;
   top: 10%;
@@ -176,6 +176,13 @@ body {
   /* max-height: 80%;
   overflow-y: scroll;
   overflow-x: hidden; */
+}
+
+#playlist-cards
+{
+  max-height: 33vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .list-card,

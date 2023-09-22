@@ -85,6 +85,7 @@ function ListCard(props) {
         cardStatus = true;
     }
     let iconToggle = "";
+    let workspaceToggle = ""
     if (!store.currentList)
     {
         iconToggle = 
@@ -98,11 +99,11 @@ function ListCard(props) {
         {
             iconToggle = 
             <Box>
-                <WorkspaceScreen />
                 <IconButton onClick={(event) => {handleClose()}} aria-label='close'>
                     <KeyboardDoubleArrowUpIcon />
                 </IconButton>
             </Box>
+            workspaceToggle = <WorkspaceScreen />
         }
         else
         {
@@ -124,25 +125,28 @@ function ListCard(props) {
                 <Typography style={{fontSize:'24pt'}}> {idNamePair.name} </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <ThumbUpIcon  style={{fontSize:'24pt'}}></ThumbUpIcon>
+                <ThumbUpIcon  style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbUpIcon>
                 </Grid>
                 <Grid item xs={1}>
                 <Typography style={{fontSize:'24pt'}}> 0 </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <ThumbDownIcon style={{fontSize:'24pt'}}></ThumbDownIcon>
+                <ThumbDownIcon style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbDownIcon>
                 </Grid>
                 <Grid item xs={1}>
                 <Typography style={{fontSize:'24pt'}}> 0 </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: Artist </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                {workspaceToggle}
                 </Grid>
                 <Grid item xs={6}>
-                <Typography style={{fontSize:'8pt'}}> Published: </Typography>
+                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Published: 0 </Typography>
                 </Grid>
                 <Grid item xs={5}>
-                <Typography style={{fontSize:'8pt'}}> Listens: </Typography>
+                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Listens: 0 </Typography>
                 </Grid>
                 <Grid item xs={1}>
                 {iconToggle}

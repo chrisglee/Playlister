@@ -54,8 +54,6 @@ function WorkspaceScreen() {
 
     let modalJSX = "";
     let list = "";
-    // console.log(store)
-    // console.log(auth)
     if(!store.currentList)
     {
         history.push("/")
@@ -66,7 +64,7 @@ function WorkspaceScreen() {
         list =
         <List 
             id="playlist-cards" 
-            sx={{ width: '100%', bgcolor: 'background.paper' }}
+            sx={{ width: '100%'}}
         >
             {
                 store.currentList.songs.map((song, index) => (
