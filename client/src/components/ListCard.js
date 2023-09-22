@@ -40,13 +40,13 @@ function ListCard(props) {
 
     function handleLoadList(event, id) {
         // event.stopPropagation();
-        console.log("handleLoadList for " + id);
+        // console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
 
-            console.log("load " + event.target.id);
+            // console.log("load " + event.target.id);
 
             // LOAD THE CURRENT LIST
             if (!selected)
@@ -60,13 +60,13 @@ function ListCard(props) {
 
     function handleExpandList(event, id) {
         event.stopPropagation();
-        console.log("handleExpandListfor " + id);
+        // console.log("handleExpandListfor " + id);
         if (!event.target.disabled) {
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
 
-            console.log("expand " + event.target.id);
+            // console.log("expand " + event.target.id);
 
             // EXPAND AND LOAD THE CURREENT LIST
             if (store.currentList)

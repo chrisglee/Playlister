@@ -6,8 +6,6 @@ function SongCard(props) {
     const [ draggedTo, setDraggedTo ] = useState(0);
     const { song, index } = props;
     
-    console.log(store.playingSongIndex)
-
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
     }

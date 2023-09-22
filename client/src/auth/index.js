@@ -11,7 +11,7 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
-    FAIL_USER: "FAIL_USER"
+    FAIL_USER: "FAIL_USER",
 }
 
 function AuthContextProvider(props) {
@@ -86,14 +86,26 @@ function AuthContextProvider(props) {
         try
         {
             const response = await api.registerUser(userName, firstName, lastName, email, password, passwordVerify);      
-            if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
+            if (response.status === 200) 
+            {    
+                const guestUserName = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
+                if (userName === guestUserName)
+                {
+                    authReducer({
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: response.data.user
+                        }
+                    })
                 }
-            })
-            history.push("/");
+                if (userName !== guestUserName)
+                {
+                    history.push("/login/");
+                }
+                else
+                {
+                    history.push("/");
+                }
             }
         }
         catch(error)
@@ -149,8 +161,6 @@ function AuthContextProvider(props) {
                 initials = "GUEST"
             }
         }
-
-        console.log("user initials: " + initials);
         return initials;
     }
 

@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import CreateSong_Transaction from '../transactions/CreateSong_Transaction'
@@ -101,13 +100,11 @@ function GlobalStoreContextProvider(props) {
         currentEditString: null,
         playingSongIndex: -1
     });
-    const history = useHistory();
 
-    console.log("inside useGlobalStore");
+    // console.log("inside useGlobalStore");
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
-    console.log("auth: " + auth);
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
@@ -723,7 +720,6 @@ function GlobalStoreContextProvider(props) {
                 let newListName = "Untitled" + maxNumber;
                 let date = Date.now();
                 response = await api.createPlaylist(newListName, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], [], date, date);
-                console.log("createNewList response: " + response);
                 if (response.status === 201) 
                 {
                     tps.clearAllTransactions();
@@ -748,7 +744,6 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
     store.loadIdNamePairs = async function () 
     {
-        console.log("load id name pairs")
         async function asyncLoadIdNamePairs() 
         {
             let response = ""
@@ -848,7 +843,6 @@ function GlobalStoreContextProvider(props) {
     store.markListForDeletion = function (id) {
         async function getListToDelete(id) {
             let response = await api.getPlaylistById(id);
-            console.log(response)
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 storeReducer({
@@ -862,7 +856,6 @@ function GlobalStoreContextProvider(props) {
     store.deleteList = function (id) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
-            console.log(response)
             if (response.data.success) {
                 async function getListPairs(playlist) {
                     if (store.currentPage === CurrentPage.HOME_PAGE)
@@ -992,7 +985,6 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
     store.setCurrentList = function (id) {
-        console.log("setting list")
         async function asyncSetCurrentList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
@@ -1395,7 +1387,6 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTIONS CHANGES THE LIKE COUNT
     store.updateAttributePlaylist = function (id, user, updateType, commentContent) {
         // GET THE LIST
-        console.log("updating playlist")
         async function updateAttributePlaylist(id, user, updateType, commentContent) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) 
