@@ -2,8 +2,6 @@ import { useContext, useState } from 'react'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import EditToolbar from './EditToolbar'
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -30,6 +28,7 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
 
+    console.log(store.currentExpandedList)
     function handleLoadList(event, id) {
         event.stopPropagation();
         console.log("handleLoadList for " + id);
@@ -43,6 +42,7 @@ function ListCard(props) {
             // CHANGE THE CURRENT LIST
             if (!selected)
             {
+                store.updateAttributePlaylist(id, null, "LISTENS"); //This works
                 store.setCurrentList(id);
                 store.clearAllTransactions();
             }
@@ -57,13 +57,14 @@ function ListCard(props) {
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
 
-            console.log("select " + event.target.id);
+            console.log("expand " + event.target.id);
 
             // SELECT THE CURRENT LIST
             if (store.currentList)
             {
                 if (store.currentList._id !== id)
                 {
+                    // store.updateAttributePlaylist(id, null, "LISTENS"); //This does not because of expand list
                     store.clearAllTransactions();
                 }
             }

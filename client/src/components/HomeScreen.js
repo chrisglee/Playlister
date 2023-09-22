@@ -6,7 +6,6 @@ import MUIDeleteModal from './MUIDeleteModal'
 
 import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab'
 import Grid from '@mui/material/Grid';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -22,6 +21,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import CommentCard from './CommentCard';
+import YouTubePlayer from './YoutubePlayer';
 /*
 	This React component lists all the top5 lists in the UI.
 	
@@ -29,16 +30,12 @@ import Tabs from '@mui/material/Tabs';
 */
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
-	const [tabIndex, setCurrentTab] = useState(0);
+	const [tabIndex, setCurrentTab] = useState(-1);
 	const [searchText, setSearchText] = useState("");
+	const [commentText, setCommentText] = useState("");
 	const { auth } = useContext(AuthContext);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isMenuOpen = Boolean(anchorEl);
-
-	console.log(store.currentPage)
-	const handleTabChange = (event, newTab) => {
-		setCurrentTab(newTab);
-	  };
 
 	useEffect(() => {
 		store.loadIdNamePairs();
@@ -53,6 +50,13 @@ const HomeScreen = () => {
 		store.createNewList();
 	}
 
+	//TAB STUFF
+	function handleTabChange(event, newTab) 
+	{
+		setCurrentTab(newTab);
+	}
+
+	//CURRENT PAGE STUFF
 	function changeCurrentPage(pageType)
 	{
 		if (pageType !== store.currentPage)
@@ -61,24 +65,37 @@ const HomeScreen = () => {
 		}
 	}
 
+	//SEARCH STUFF
 	function handleUpdateSearchText(event) {
         setSearchText(event.target.value);
     }
-
-	function handleKeyPress(event) {
+	function handleSearchKeyPress(event) {
         if (event.code === "Enter") {
 			store.changeSearchCriteria(searchText)
 			event.target.blur();
         }
     }	
 
+	//MENU STUFF
 	const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
 	const handleCloseMenu = () => {
         setAnchorEl(null);
     };
+	
+	//COMMENT STUFF
+	function handleUpdateCommentText(event) {
+        setCommentText(event.target.value);
+    }
+	function handleCommentKeyPress(event) {
+        if (event.code === "Enter") {
+			store.updateAttributePlaylist(store.currentList._id, auth.user.firstName + " " + auth.user.lastName, "COMMENTS", commentText)
+			event.target.blur();
+			setCommentText("");
+        }
+    }	
+
 
 	let listCard = "";
 	let newIdNamePairs = [];
@@ -125,6 +142,40 @@ const HomeScreen = () => {
 			</Box>
 		}
 	}
+	let player = "";
+	let commentList = "";
+	if (store)
+	{
+		if (store.currentList)
+		{
+			if (store.currentList.comments)
+			{
+				commentList =
+				store.currentList.comments.map((pair) => (
+					<CommentCard
+							key={pair._id}
+							commenter={pair.username}
+							comment={pair.content}/>
+				)) 
+			}
+			if (tabIndex === -1)
+			{
+				setCurrentTab(0)
+			}
+			if(store.currentList.songs)
+			{
+				let songLinkArray = []
+				for (let song in store.currentList.songs)
+				{
+					songLinkArray.push(song.youTubeId)
+				}
+				player =
+				<YouTubePlayer 
+					givenPlaylist={songLinkArray}
+				/>
+			}
+		}
+	}
 
 	if (store) {
 		listCard = 
@@ -145,7 +196,7 @@ const HomeScreen = () => {
 							label="Search" 
 							variant="filled"
 							value={searchText}
-							onKeyPress={handleKeyPress}
+							onKeyPress={handleSearchKeyPress}
 							onChange={handleUpdateSearchText}
 							sx={{ marginRight: '20%', input: { color: 'white' } }}>
 						</TextField>
@@ -189,18 +240,30 @@ const HomeScreen = () => {
 			<Grid item xs={12} sm={6}>
 				<Box sx={{ width: '100%', height: '80%'}}>
 					<Tabs value={tabIndex} onChange={handleTabChange}>
-        				<Tab label="Player" />
-        				<Tab label="Comments" />
+        				<Tab label="Player" disabled={!store.currentList}/>
+        				<Tab label="Comments" disabled={!store.currentList} />
       				</Tabs>
 					  <Box>
 						{tabIndex === 0 && (
           				<Box>
-            				PLAYER
+            				{/* {player} */}
           				</Box>
        					)}
         				{tabIndex === 1 && (
           				<Box>
-            				COMMENTS
+							<List disablePadding sx={{ width: '100%', height: '55.5vh', overflow: "hidden", overflowY: "auto", }}>
+							{
+								commentList
+							}
+							</List>
+							<TextField
+							fullWidth
+							label={"Add Comment"}
+							variant="filled"
+							value={commentText}
+							onKeyPress={handleCommentKeyPress}
+							onChange={handleUpdateCommentText}>
+							</TextField>
           				</Box>
         				)}
 					</Box>

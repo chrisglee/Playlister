@@ -1,4 +1,5 @@
 import AppBanner from './AppBanner'
+import CommentCard from './CommentCard'
 import EditToolbar from './EditToolbar'
 import HomeScreen from './HomeScreen'
 import HomeWrapper from './HomeWrapper'
@@ -21,6 +22,7 @@ import WorkspaceScreen from './WorkspaceScreen'
 */
 export { 
     AppBanner,  
+    CommentCard,
     EditToolbar, 
     HomeScreen,
     HomeWrapper,

@@ -70,7 +70,8 @@ const CurrentSort = {
 const UpdateType = {
     LISTENS : "LISTENS",
     LIKES : "LIKES",
-    DISLIKES : "DISLIKES"
+    DISLIKES : "DISLIKES",
+    COMMENTS : "COMMENTS"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -304,7 +305,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_EXPAND_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
-                    idNamePairs: store.idNamePairs,
+                    idNamePairs: payload.pairsArray,
                     currentList: payload.playlist,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -346,7 +347,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    currentExpandedList: null,
+                    currentExpandedList: store.currentExpandedList,
                     currentPage: payload,
                     currentSearchCriteria: null,
                     currentSortType: CurrentSort.NONE
@@ -363,7 +364,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    currentExpandedList: null,
+                    currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
                     currentSearchCriteria: payload,
                     currentSortType: store.currentSortType
@@ -380,7 +381,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    currentExpandedList: null,
+                    currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
                     currentSearchCriteria: store.currentSearchCriteria,
                     currentSortType: payload
@@ -653,15 +654,6 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-
-                //WHY WAS THIS EVEN EHRE TO BEGIN WITH
-                // response = await api.updatePlaylistById(playlist._id, playlist);
-                // if (response.data.success) {
-                //     storeReducer({
-                //         type: GlobalStoreActionType.SET_CURRENT_LIST,
-                //         payload: playlist
-                //     });
-                // }
             }
         }
         asyncSetCurrentList(id);
@@ -843,129 +835,23 @@ function GlobalStoreContextProvider(props) {
         asyncPublishList(id, date);
     }
     
-    //THIS FUNCTION SETS THE CURRENT EXPANDED LIST
+    //THIS FUNCTION SETS THE CURRENT EXPANDED LIST, this is so sad that this has to be overloaded
     store.expandList = function (id) {
         async function asyncSetExpandList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
-{
-                storeReducer({
-                    type: GlobalStoreActionType.SET_EXPAND_LIST,
-                    payload: {
-                        id: playlist._id,
-                        playlist: playlist
-                    }
-                });
-
-                }
-            }
-        }
-        asyncSetExpandList(id);
-    }
-
-
-    //THIS FUNCTION CLOSES THE CURRENT EXPANDED LIST
-    store.closeExpandList = function (id) {
-        async function asyncSetExpandList(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-
-                storeReducer({
-                    type: GlobalStoreActionType.CLOSE_EXPAND_LIST,
-                });
-                
-            }
-        }
-        asyncSetExpandList(id);
-    }
-
-    //THIS FUNCTION DUPLICATES THE GIVEN LIST
-    store.duplicateList = async function (id) {
-        async function asyncDuplicateList(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                let playlist = response.data.playlist;
-                let duplicateName = playlist.name + " Duplicate"
-                let date = Date.now()
-                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], playlist.songs, date, date);
-                if (response.status === 201) 
+                if (!store.currentList)
                 {
-                    store.loadIdNamePairs();
+                    playlist.listens++;
                 }
                 else 
                 {
-                    console.log("API FAILED TO DUPLICATE A LIST");
+                    if(store.currentList._id !== id)
+                    {
+                        playlist.listens++;
+                    }
                 }
-            }
-        }
-        asyncDuplicateList(id);
-    }
-
-    //THIS FUNCTION CHANGES THE CURRENT PAGE
-    store.changeCurrentPage = function (pageType)
-    {
-        storeReducer({
-            type: GlobalStoreActionType.CHANGE_CURRENT_PAGE,
-            payload: pageType
-        });
-    }
-
-    //THIS FUNCTIONS CHANGES THE SEARCH FIELD
-    store.changeSearchCriteria = function (searchText)
-    {
-        storeReducer({
-            type: GlobalStoreActionType.CHANGE_SEARCH_CRITERIA,
-            payload: searchText
-        });
-    }
-
-    //THIS FUNCTIONS CHANGES THE SORT TYPE
-    store.changeSortType = function (sortType)
-    {
-        storeReducer({
-            type: GlobalStoreActionType.CHANGE_SORT_TYPE,
-            payload: sortType
-        });
-    }
-
-    // THIS FUNCTIONS CHANGES THE LIKE COUNT
-    store.updateAttributePlaylist = function (id, user, updateType) {
-        // GET THE LIST
-        async function updateAttributePlaylist(id, user, updateType) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) 
-            {
-                let playlist = response.data.playlist;
-                if (updateType === UpdateType.LIKES)
-                {
-                    if (!playlist.userLikes.includes(user))
-                    {
-                        playlist.userLikes.push(user)
-                        playlist.numLikes++
-                    }
-                    else
-                    {
-                        let index = playlist.userLikes.indexOf(user);
-                        playlist.userLikes.splice(index, 1)
-                        playlist.numLikes--
-                    }
-                } 
-                if (updateType === UpdateType.DISLIKES)
-                {
-                    if (!playlist.userDislikes.includes(user))
-                    {
-                        playlist.userDislikes.push(user)
-                        playlist.numDislikes++
-                    }
-                    else
-                    {
-                        let index = playlist.userDislikes.indexOf(user);
-                        playlist.userDislikes.splice(index, 1)
-                        playlist.numDislikes--
-                    }
-                }  
-
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
@@ -1042,15 +928,13 @@ function GlobalStoreContextProvider(props) {
                                 {
                                     pairsArray = []
                                 }
-                            
-                                console.log(pairsArray);
-                                console.log(playlist);
                                 storeReducer({
-                                type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                                type: GlobalStoreActionType.SET_EXPAND_LIST,
                                 payload: 
                                 {
                                     pairsArray: pairsArray,
-                                    playlist: playlist
+                                    playlist: playlist,
+                                    id: id
                                 }
                                 });
                             }
@@ -1065,7 +949,217 @@ function GlobalStoreContextProvider(props) {
                 updateList(playlist);
             }
         }
-        updateAttributePlaylist(id, user, updateType);
+        asyncSetExpandList(id);
+    }
+
+
+    //THIS FUNCTION CLOSES THE CURRENT EXPANDED LIST
+    store.closeExpandList = function (id) {
+        async function asyncSetExpandList(id) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.CLOSE_EXPAND_LIST,
+                });
+            }
+        }
+        asyncSetExpandList(id);
+    }
+
+    //THIS FUNCTION DUPLICATES THE GIVEN LIST
+    store.duplicateList = async function (id) {
+        async function asyncDuplicateList(id) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                let duplicateName = playlist.name + " Duplicate"
+                let date = Date.now()
+                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], playlist.songs, date, date);
+                if (response.status === 201) 
+                {
+                    store.loadIdNamePairs();
+                }
+                else 
+                {
+                    console.log("API FAILED TO DUPLICATE A LIST");
+                }
+            }
+        }
+        asyncDuplicateList(id);
+    }
+
+    //THIS FUNCTION CHANGES THE CURRENT PAGE
+    store.changeCurrentPage = function (pageType)
+    {
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_CURRENT_PAGE,
+            payload: pageType
+        });
+    }
+
+    //THIS FUNCTIONS CHANGES THE SEARCH FIELD
+    store.changeSearchCriteria = function (searchText)
+    {
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_SEARCH_CRITERIA,
+            payload: searchText
+        });
+    }
+
+    //THIS FUNCTIONS CHANGES THE SORT TYPE
+    store.changeSortType = function (sortType)
+    {
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_SORT_TYPE,
+            payload: sortType
+        });
+    }
+
+    // THIS FUNCTIONS CHANGES THE LIKE COUNT
+    store.updateAttributePlaylist = function (id, user, updateType, commentContent) {
+        // GET THE LIST
+        async function updateAttributePlaylist(id, user, updateType, commentContent) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) 
+            {
+                let playlist = response.data.playlist;
+                if (updateType === UpdateType.LIKES)
+                {
+                    if (!playlist.userLikes.includes(user))
+                    {
+                        playlist.userLikes.push(user)
+                        playlist.numLikes++
+                    }
+                    else
+                    {
+                        let index = playlist.userLikes.indexOf(user);
+                        playlist.userLikes.splice(index, 1)
+                        playlist.numLikes--
+                    }
+                } 
+                if (updateType === UpdateType.DISLIKES)
+                {
+                    if (!playlist.userDislikes.includes(user))
+                    {
+                        playlist.userDislikes.push(user)
+                        playlist.numDislikes++
+                    }
+                    else
+                    {
+                        let index = playlist.userDislikes.indexOf(user);
+                        playlist.userDislikes.splice(index, 1)
+                        playlist.numDislikes--
+                    }
+                } 
+                if (updateType === UpdateType.COMMENTS)
+                {
+                    let commentTuple = {
+                        username: user,
+                        content: commentContent,
+                    };
+                    playlist.comments.push(commentTuple);
+                }
+                if (updateType === UpdateType.LISTENS)
+                {
+                    playlist.listens++
+                }
+                async function updateList(playlist) {
+                    response = await api.updatePlaylistById(playlist._id, playlist);
+                    if (response.data.success) {
+                        async function getListPairs(playlist) {
+                            if (store.currentPage === CurrentPage.HOME_PAGE)
+                            {
+                                response = await api.getPlaylistPairs();
+                            }
+                            else
+                            {
+                                response = await api.getAllPlaylists();
+                            }
+                            if (response.data.success) 
+                            {
+                                let pairsArray = response.data.idNamePairs;
+                                if (store.currentSearchCriteria !== null)
+                                {
+                                    if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
+                                    {
+                                        pairsArray = pairsArray.filter(function (playlist) {
+                                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                            });
+                                    }
+                                    else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
+                                    {
+                                        pairsArray = pairsArray.filter(function (playlist) {
+                                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                            });
+                                    }
+                                }
+                                switch (store.currentSortType)
+                                {
+                                    case CurrentSort.CREATION_DATE:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.creationDate) - new Date(list1.creationDate))
+                                        break;
+                                    }
+                                    case CurrentSort.LAST_EDIT_DATE:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.lastEditDate) - new Date(list1.lastEditDate))
+                                        break;
+                                    }
+                                    case CurrentSort.NAME:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
+                                        break;
+                                    }
+                                    case CurrentSort.PUBLISH_DATE:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
+                                        break;
+                                    }
+                                    case CurrentSort.LISTENS:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
+                                        break;
+                                    }
+                                    case CurrentSort.LIKES:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
+                                        break;
+                                    }
+                                    case CurrentSort.DISLIKES:
+                                    {
+                                        pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
+                                        break;
+                                    }
+                                    default: //usually defualt is null anyways
+                                    {
+                                        pairsArray = pairsArray //bsaically no change
+                                    }
+                                }
+                                if (store.currentSearchCriteria === "")
+                                {
+                                    pairsArray = []
+                                }
+                                storeReducer({
+                                type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                                payload: 
+                                {
+                                    pairsArray: pairsArray,
+                                    playlist: playlist,
+                                }
+                                });
+                            }
+                            else
+                            {
+                                console.log("API FAILED TO GET THE LIST PAIRS");
+                            }
+                        }
+                        getListPairs(playlist);
+                    }
+                }
+                updateList(playlist);
+            }
+        }
+        updateAttributePlaylist(id, user, updateType, commentContent);
     }
 
     return (
