@@ -31,9 +31,10 @@ import Tabs from '@mui/material/Tabs';
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
 	const [tabIndex, setCurrentTab] = useState(0);
-	const [menuStatus, setMenuStatus] = useState(false)
 	const [searchText, setSearchText] = useState("");
 	const { auth } = useContext(AuthContext);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const isMenuOpen = Boolean(anchorEl);
 
 	const handleTabChange = (event, newTab) => {
 		setCurrentTab(newTab);
@@ -45,7 +46,8 @@ const HomeScreen = () => {
 		{
 			setSearchText("");
 		}
-	}, [store.currentPage, store.currentSearchCriteria]);
+		console.log("from homescreen " + store.currentSortType)
+	}, [store.currentPage, store.currentSearchCriteria, store.currentSortType]);
 
 	function handleCreateNewList() {
 		store.createNewList();
@@ -70,31 +72,60 @@ const HomeScreen = () => {
         }
     }	
 
-	function handleCloseMenu()
-	{
+	const handleOpenMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-	}
+	const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
 
 	let listCard = "";
-	let tempIdNamePairs = [];
+	let newIdNamePairs = [];
 	if (store)
 	{
 		if(store.idNamePairs)
 		{
-			tempIdNamePairs = store.idNamePairs
+			newIdNamePairs = store.idNamePairs
 
-			tempIdNamePairs = tempIdNamePairs.filter(function (playlist) {
+			newIdNamePairs = newIdNamePairs.filter(function (playlist) {
 				return (!(playlist.ownerFirstName !== auth.user.firstName && playlist.ownerLastName !== auth.user.lastName && !playlist.published))
 			});
 			
 			if (store.currentPage === "SEARCH_BY_PLAYLIST" || store.currentPage === "SEARCH_BY_USER")
 			{
-				tempIdNamePairs = tempIdNamePairs.filter(function (playlist) {
+				newIdNamePairs = newIdNamePairs.filter(function (playlist) {
 					return (!(playlist.ownerFirstName === auth.user.firstName && playlist.ownerLastName === auth.user.lastName && !playlist.published))
 				});
 			}
 		}
 	}
+
+	let menuList = ""
+	if (store)
+	{
+		if (store.currentPage === "HOME_PAGE")
+		{
+			menuList = 
+			<Box>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("CREATION_DATE") }}>Creation Date (Old - New)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LAST_EDIT_DATE") }}>Last Edit Date (Old - New)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("NAME") }}>Name (A - Z)</MenuItem>
+			</Box>
+		}
+		else if (store.currentPage === "SEARCH_BY_PLAYLIST" || store.currentPage === "SEARCH_BY_USER")
+		{
+			menuList = 
+			<Box>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("NAME") }}>Name (A - Z)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("PUBLISH_DATE") }}>Publish Date (Newest)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LISTENS") }}>Listens (High - Low)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LIKES") }}>Likes (High - Low)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("DISLIKES") }}>Dislikes (High - Low)</MenuItem>
+			</Box>
+		}
+	}
+
 	if (store) {
 		listCard = 
 			<Grid container>
@@ -119,20 +150,32 @@ const HomeScreen = () => {
 							sx={{ marginRight: '20%', input: { color: 'white' } }}>
 						</TextField>
 						<Typography sx={{ color: 'white' }}>SORT BY</Typography>
-						<IconButton>
+						<IconButton onClick={handleOpenMenu}>
 							<MenuIcon style={{ marginLeft: "auto" }}> </MenuIcon>
-							<Menu>
-								<MenuItem onClick={handleCloseMenu}>By Creation Date (Old-New)</MenuItem>
-								<MenuItem onClick={handleCloseMenu}>By Last Edit Date (Old-New)</MenuItem>
-								<MenuItem onClick={handleCloseMenu}>By Name (A-Z)</MenuItem>
-							</Menu>
 						</IconButton>
+							<Menu
+								id="playlist-sort-menu"
+								anchorEl={anchorEl}
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								open={isMenuOpen}
+								onClose={handleCloseMenu}
+							>
+								{menuList}
+							</Menu>
     				</Toolbar>
 				</Grid>
 			<Grid item xs={12} sm={6}>
 				<List disablePadding sx={{ width: '100%', height: '68.5vh', overflow: "hidden", overflowY: "scroll", }}>
 				{
-					tempIdNamePairs.map((pair) => (
+					newIdNamePairs.map((pair) => (
 						<ListCard
 							key={pair._id}
 							idNamePair={pair}

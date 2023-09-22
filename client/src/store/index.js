@@ -35,7 +35,8 @@ export const GlobalStoreActionType = {
     SET_EXPAND_LIST: "SET_EXPAND_LIST",
     CLOSE_EXPAND_LIST: "CLOSE_EXPAND_LIST",
     CHANGE_CURRENT_PAGE: "CHANGE_CURRENT_PAGE",
-    CHANGE_SEARCH_CRITERIA: "CHANGE_SEARCH_CRITERIA"
+    CHANGE_SEARCH_CRITERIA: "CHANGE_SEARCH_CRITERIA",
+    CHANGE_SORT_TYPE: "CHANGE_SORT_TYPE"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -54,6 +55,17 @@ const CurrentPage = {
     SEARCH_BY_USER : "SEARCH_BY_USER"
 }
 
+const CurrentSort = {
+    NONE : "NONE",
+    CREATION_DATE : "CREATION_DATE",
+    LAST_EDIT_DATE : "LAST_EDIT_DATE",
+    NAME : "NAME",
+    PUBLISH_DATE : "PUBLISH_DATE",
+    LISTENS : "LISTENS",
+    LIKES : "LIKES",
+    DISLIKES : "DISLIKES"
+}
+
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
 function GlobalStoreContextProvider(props) {
@@ -70,7 +82,8 @@ function GlobalStoreContextProvider(props) {
         listMarkedForDeletion: null,
         currentExpandedList: null,
         currentPage: CurrentPage.HOME_PAGE,
-        currentSearchCriteria: null
+        currentSearchCriteria: null,
+        currentSortType: CurrentSort.NONE
     });
     const history = useHistory();
 
@@ -99,7 +112,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // PUBLISH LIST
@@ -116,7 +130,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -133,7 +148,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 })
             }
             // CREATE A NEW LIST
@@ -150,7 +166,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -167,7 +184,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -184,7 +202,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: payload.playlist,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // UPDATE A LIST
@@ -201,7 +220,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // START EDITING A LIST NAME
@@ -218,7 +238,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             // 
@@ -235,7 +256,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             case GlobalStoreActionType.REMOVE_SONG: {
@@ -251,7 +273,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             case GlobalStoreActionType.HIDE_MODALS: {
@@ -267,7 +290,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             case GlobalStoreActionType.SET_EXPAND_LIST: {
@@ -283,7 +307,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: payload.id,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             case GlobalStoreActionType.CLOSE_EXPAND_LIST: {
@@ -299,7 +324,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: store.currentSearchCriteria
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
                 });
             }
             case GlobalStoreActionType.CHANGE_CURRENT_PAGE: {
@@ -315,7 +341,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: payload,
-                    currentSearchCriteria: null
+                    currentSearchCriteria: null,
+                    currentSortType: CurrentSort.NONE
                 });
             }
             case GlobalStoreActionType.CHANGE_SEARCH_CRITERIA: {
@@ -331,9 +358,28 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: store.currentPage,
-                    currentSearchCriteria: payload
+                    currentSearchCriteria: payload,
+                    currentSortType: store.currentSortType
                 });
             }
+            case GlobalStoreActionType.CHANGE_SORT_TYPE: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentExpandedList: null,
+                    currentPage: store.currentPage,
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: payload
+                });
+            }
+
             default:
                 return store;
         }
@@ -412,77 +458,95 @@ function GlobalStoreContextProvider(props) {
 
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
-    store.loadIdNamePairs = async function () {
+    store.loadIdNamePairs = async function () 
+    {
         async function asyncLoadIdNamePairs() 
         {
+            let response = ""
             if (store.currentPage === CurrentPage.HOME_PAGE)
             {
-                const response = await api.getPlaylistPairs();
-                if (response.data.success) 
+                response = await api.getPlaylistPairs();
+            }
+            else
+            {
+                response = await api.getAllPlaylists();
+            }
+            if (response.data.success) 
+            {
+                let pairsArray = response.data.idNamePairs;
+                if (store.currentSearchCriteria !== null)
                 {
-                    let pairsArray = response.data.idNamePairs;
-                    if (store.currentSearchCriteria !== null)
+                    if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
                     {
                         pairsArray = pairsArray.filter(function (playlist) {
                             return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                          });
-                        if (store.currentSearchCriteria === "")
-                        {
-                            pairsArray = []
-                        }
+                            });
                     }
-                    storeReducer({
-                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: 
+                    else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
                     {
-                        pairsArray: pairsArray,
-                        length: pairsArray.length
+                        pairsArray = pairsArray.filter(function (playlist) {
+                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                            });
                     }
-                    });
                 }
-                else 
+                switch (store.currentSortType)
                 {
-                    console.log("API FAILED TO GET THE LIST PAIRS");
+                    case CurrentSort.CREATION_DATE:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.creationDate) - new Date(list1.creationDate))
+                        break;
+                    }
+                    case CurrentSort.LAST_EDIT_DATE:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.lastEditDate) - new Date(list1.lastEditDate))
+                        break;
+                    }
+                    case CurrentSort.NAME:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
+                        break;
+                    }
+                    case CurrentSort.PUBLISH_DATE:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
+                        break;
+                    }
+                    case CurrentSort.LISTENS:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
+                        break;
+                    }
+                    case CurrentSort.LIKES:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
+                        break;
+                    }
+                    case CurrentSort.DISLIKES:
+                    {
+                        pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
+                        break;
+                    }
+                    default: //usually defualt is null anyways
+                    {
+                        pairsArray = pairsArray //bsaically no change
+                    }
+                    }
+                    if (store.currentSearchCriteria === "")
+                    {
+                        pairsArray = []
+                    }
+                storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: 
+                {
+                    pairsArray: pairsArray,
+                    length: pairsArray.length
                 }
+                });
             }
-            else if (store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST || CurrentPage.SEARCH_BY_USER)
+            else
             {
-                const response = await api.getAllPlaylists();
-                if (response.data.success) 
-                {
-                    let pairsArray = response.data.idNamePairs;
-                    if (store.currentSearchCriteria !== null)
-                    {
-                        if (store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
-                        {
-                            pairsArray = pairsArray.filter(function (playlist) {
-                                return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                              });
-                        }
-                        else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-                        {
-                            pairsArray = pairsArray.filter(function (playlist) {
-                                return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                              });
-                        }
-                        if (store.currentSearchCriteria === "")
-                        {
-                            pairsArray = []
-                        }
-                    }
-                    storeReducer({
-                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                        payload: 
-                        {
-                            pairsArray: pairsArray,
-                            length: pairsArray.length
-                        }
-                        });
-                }
-                else 
-                {
-                    console.log("API FAILED TO GET THE LIST PAIRS");
-                }
+                console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
         asyncLoadIdNamePairs();
@@ -826,10 +890,18 @@ function GlobalStoreContextProvider(props) {
     //THIS FUNCTIONS CHANGES THE SEARCH FIELD
     store.changeSearchCriteria = function (searchText)
     {
-        console.log(searchText)
         storeReducer({
             type: GlobalStoreActionType.CHANGE_SEARCH_CRITERIA,
             payload: searchText
+        });
+    }
+
+    //THIS FUNCTIONS CHANGES THE SORT TYPE
+    store.changeSortType = function (sortType)
+    {
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_SORT_TYPE,
+            payload: sortType
         });
     }
     return (
