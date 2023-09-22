@@ -39,7 +39,8 @@ export const GlobalStoreActionType = {
     CHANGE_SORT_TYPE: "CHANGE_SORT_TYPE",
     UPDATE_PLAYLIST: "UPDATE PLAYLIST",
     ERROR_CHANGE_LIST_NAME : "ERROR_CHANGE_LIST_NAME",
-    LOGIN_AS_GUEST : "LOGIN_AS_GUEST"
+    LOGIN_AS_GUEST : "LOGIN_AS_GUEST",
+    LOGIN_AS_USER : "LOGIN_AS_USER"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -457,6 +458,24 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     currentExpandedList: null,
                     currentPage: CurrentPage.SEARCH_BY_PLAYLIST,
+                    currentSearchCriteria: null,
+                    currentSortType: CurrentSort.NONE,
+                    currentEditString: null
+                });
+            }
+            case GlobalStoreActionType.LOGIN_AS_USER: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: [],
+                    currentList: null,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    newListCounter: 0,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentExpandedList: null,
+                    currentPage: CurrentPage.HOME_PAGE,
                     currentSearchCriteria: null,
                     currentSortType: CurrentSort.NONE,
                     currentEditString: null
@@ -1329,13 +1348,23 @@ function GlobalStoreContextProvider(props) {
         updateAttributePlaylist(id, user, updateType, commentContent);
     }
 
-    store.loginAsGuest = function (sortType)
+    store.loginAsGuest = function ()
     {
         storeReducer({
             type: GlobalStoreActionType.LOGIN_AS_GUEST,
             payload: null
         });
     }
+
+    store.loginAsUser = function ()
+    {
+        storeReducer({
+            type: GlobalStoreActionType.LOGIN_AS_USER,
+            payload: null
+        });
+    }
+
+
 
     return (
         <GlobalStoreContext.Provider value={{

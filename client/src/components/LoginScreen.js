@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import AuthContext from '../auth'
+import { GlobalStoreContext } from '../store'
 
 import Copyright from './Copyright'
 
@@ -19,6 +20,8 @@ import MUIErrorMessage from './MUIErrorMessage';
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -77,6 +80,7 @@ export default function LoginScreen() {
                         <Button
                             type="submit"
                             fullWidth
+                            onClick={() => store.loginAsUser()}
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >

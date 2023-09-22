@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 
@@ -15,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import MUIErrorMessage from './MUIErrorMessage';
 
 export default function RegisterScreen() {
+    const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
 
     const handleSubmit = (event) => {
@@ -115,6 +117,7 @@ export default function RegisterScreen() {
                         </Grid>
                         <Button
                             type="submit"
+                            onClick={() => store.loginAsUser()}
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}

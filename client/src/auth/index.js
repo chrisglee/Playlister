@@ -21,7 +21,7 @@ function AuthContextProvider(props) {
         errorMessage: ""
     });
     const history = useHistory();
-
+    
     useEffect(() => {
         auth.getLoggedIn();
     }, []);
