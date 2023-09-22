@@ -1463,7 +1463,10 @@ function GlobalStoreContextProvider(props) {
                 }
                 if (updateType === UpdateType.LISTENS)
                 {
-                    playlist.listens++;
+                    if(playlist.published)
+                    {
+                        playlist.listens++;
+                    }
                     flag = true;
                 }
                 async function updateList(playlist) {

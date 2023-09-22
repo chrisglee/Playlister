@@ -332,9 +332,9 @@ const HomeScreen = () => {
 							</List>
 							<TextField
 							fullWidth
-							label={!store.currentList || auth.user.userName === guestUserName ? "Unable to Add Comment" : "Add Comment"}
+							label={!store.currentList || auth.user.userName === guestUserName || !store.currentList.published? "Unable to Add Comment" : "Add Comment"}
 							variant="filled"
-							disabled={!store.currentList || auth.user.userName === guestUserName}
+							disabled={!store.currentList || auth.user.userName === guestUserName || !store.currentList.published}
 							value={commentText}
 							onKeyPress={handleCommentKeyPress}
 							onChange={handleUpdateCommentText}>
