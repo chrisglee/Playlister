@@ -30,7 +30,7 @@ import YouTubePlayer from './YoutubePlayer';
 */
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
-	const [tabIndex, setCurrentTab] = useState(-1);
+	const [tabIndex, setCurrentTab] = useState(0);
 	const [searchText, setSearchText] = useState("");
 	const [commentText, setCommentText] = useState("");
 	const { auth } = useContext(AuthContext);
@@ -157,10 +157,6 @@ const HomeScreen = () => {
 							comment={pair.content}/>
 				)) 
 			}
-			if (tabIndex === -1)
-			{
-				setCurrentTab(0)
-			}
 			if(store.currentList)
 			{
 					let songLinkArray = []
@@ -176,7 +172,15 @@ const HomeScreen = () => {
 
 			}
 		}
+		else
+		{
+			player = 
+			<YouTubePlayer 
+				playlist={[]}
+			/>
+		}
 	}
+	
 
 	if (store) {
 		listCard = 
@@ -241,8 +245,8 @@ const HomeScreen = () => {
 			<Grid item xs={12} sm={6}>
 				<Box sx={{ width: '100%', height: '80%'}}>
 					<Tabs value={tabIndex} onChange={handleTabChange}>
-        				<Tab label="Player" disabled={!store.currentList}/>
-        				<Tab label="Comments" disabled={!store.currentList} />
+        				<Tab label="Player"/>
+        				<Tab label="Comments"/>
       				</Tabs>
 					  <Box>
 						{tabIndex === 0 && (
@@ -251,7 +255,7 @@ const HomeScreen = () => {
 								<Grid item xs={1}>
 								
 								</Grid> 
-								<Grid item sx={{marginTop: '50px'}} xs={10}>
+								<Grid item xs={10}>
 								{player}
 								</Grid> 
 								<Grid item xs={1}>
@@ -269,8 +273,9 @@ const HomeScreen = () => {
 							</List>
 							<TextField
 							fullWidth
-							label={"Add Comment"}
+							label={!store.currentList ? "Unable to Add Comment" : "Add Comment"}
 							variant="filled"
+							disabled={!store.currentList}
 							value={commentText}
 							onKeyPress={handleCommentKeyPress}
 							onChange={handleUpdateCommentText}>

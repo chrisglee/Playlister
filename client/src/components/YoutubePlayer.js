@@ -2,6 +2,15 @@ import YouTube from 'react-youtube';
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import { Typography } from '@mui/material';
+
 export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
@@ -11,8 +20,9 @@ export default function YouTubePlayer(props) {
         if(store.currentList)
         {
             setValue(store.currentList._id) 
+            console.log(store.currentList._id)
         }
-    }, [store.currentList._id])
+    }, [store.currentList])
     
     // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
     // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
@@ -82,9 +92,108 @@ export default function YouTubePlayer(props) {
         }
     }
 
-    return <YouTube
-        videoId={playlist[currentSong]}
-        opts={playerOptions}
-        onReady={onPlayerReady}
-        onStateChange={onPlayerStateChange} />;
+    let playerComponent = ""
+    if (store.currentList)
+    {
+        playerComponent = 
+        <Box>
+            <Grid container columns={13} sx={{bgcolor: "#fffff1", borderRadius: '16px'}}>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"center", fontWeight: 'bold', fontSize: '24pt'}}> Now Playing </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Playlist: {store.currentList.name} </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Song #: {currentSong + 1} </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Title: </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Artist: </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                <YouTube
+                    videoId={playlist[currentSong]}
+                    opts={playerOptions}
+                    onReady={onPlayerReady}
+                    onStateChange={onPlayerStateChange} />
+                </Grid>
+                <Grid item xs={4}>
+
+                </Grid>
+                <Grid item xs={5}> 
+                <Box sx={{bgcolor: "#fffff1", borderRadius: '16px', alignItems: "center", justifyContent: "center"}}>
+                    <IconButton>
+                        <SkipPreviousIcon style={{fontSize: '30pt', color: 'black'}}></SkipPreviousIcon>
+                    </IconButton>
+                    <IconButton>
+                        <PlayArrowIcon style={{fontSize: '30pt', color: 'black'}}></PlayArrowIcon>
+                    </IconButton>
+                    <IconButton>
+                        <PauseIcon style={{fontSize: '30pt', color: 'black'}}></PauseIcon>
+                    </IconButton>
+                    <IconButton>
+                        <SkipNextIcon style={{fontSize: '30pt', color: 'black'}}></SkipNextIcon>
+                    </IconButton>
+                </Box>
+                <Grid item xs={4}>
+                </Grid>
+                </Grid>
+            </Grid>
+        </Box>
+    }
+    else
+    {
+        playerComponent = 
+        <Box>
+            <Grid container columns={13} sx={{bgcolor: "#fffff1", borderRadius: '16px'}}>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"center", fontWeight: 'bold', fontSize: '24pt'}}> Currently Not Playing </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> </Typography>
+                </Grid>
+                <Grid item xs={13}>
+                <Box sx={{bgcolor: "black", height: '390px', width: '640px'}}>
+                </Box>
+                </Grid>
+                <Grid item xs={4}>
+
+                </Grid>
+                <Grid item xs={5}> 
+                <Box sx={{bgcolor: "#fffff1", borderRadius: '16px', alignItems: "center", justifyContent: "center"}}>
+                    <IconButton>
+                        <SkipPreviousIcon style={{fontSize: '30pt', color: 'black'}}></SkipPreviousIcon>
+                    </IconButton>
+                    <IconButton>
+                        <PlayArrowIcon style={{fontSize: '30pt', color: 'black'}}></PlayArrowIcon>
+                    </IconButton>
+                    <IconButton>
+                        <PauseIcon style={{fontSize: '30pt', color: 'black'}}></PauseIcon>
+                    </IconButton>
+                    <IconButton>
+                        <SkipNextIcon style={{fontSize: '30pt', color: 'black'}}></SkipNextIcon>
+                    </IconButton>
+                </Box>
+                <Grid item xs={4}>
+                </Grid>
+                </Grid>
+            </Grid>
+        </Box>
+    }
+
+    return (
+        playerComponent
+    )
 }
