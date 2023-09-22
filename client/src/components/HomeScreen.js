@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../auth';
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -13,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonIcon from '@mui/icons-material/Person';
 import SortIcon from "@mui/icons-material/Sort";
@@ -29,7 +31,9 @@ import Tabs from '@mui/material/Tabs';
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
 	const [tabIndex, setCurrentTab] = useState(0);
+	const [menuStatus, setMenuStatus] = useState(false)
 	const [searchText, setSearchText] = useState("");
+	const { auth } = useContext(AuthContext);
 
 	const handleTabChange = (event, newTab) => {
 		setCurrentTab(newTab);
@@ -66,15 +70,45 @@ const HomeScreen = () => {
         }
     }	
 
+	function handleCloseMenu()
+	{
+
+	}
+
 	let listCard = "";
+	let tempIdNamePairs = [];
+	if (store)
+	{
+		if(store.idNamePairs)
+		{
+			tempIdNamePairs = store.idNamePairs
+
+			tempIdNamePairs = tempIdNamePairs.filter(function (playlist) {
+				return (!(playlist.ownerFirstName !== auth.user.firstName && playlist.ownerLastName !== auth.user.lastName && !playlist.published))
+			});
+			
+			if (store.currentPage === "SEARCH_BY_PLAYLIST" || store.currentPage === "SEARCH_BY_USER")
+			{
+				tempIdNamePairs = tempIdNamePairs.filter(function (playlist) {
+					return (!(playlist.ownerFirstName === auth.user.firstName && playlist.ownerLastName === auth.user.lastName && !playlist.published))
+				});
+			}
+		}
+	}
 	if (store) {
 		listCard = 
 			<Grid container>
 				<Grid item xs={12}>
     				<Toolbar sx={{bgcolor: '#3d5a80'}} variant="dense">
-						<IconButton onClick={() => {changeCurrentPage("HOME_PAGE")}}><HomeIcon style={{ color: store.currentPage === "HOME_PAGE" ? '#7CFC00' : 'black'}}></HomeIcon></IconButton>
-						<IconButton onClick={() => {changeCurrentPage("SEARCH_BY_PLAYLIST")}}><GroupsIcon style={{ marginRight: '2%', color: store.currentPage === "SEARCH_BY_PLAYLIST" ? '#7CFC00' : 'black' }} ></GroupsIcon></IconButton>
-						<IconButton style={{ marginRight: '20%'}} onClick={() => {changeCurrentPage("SEARCH_BY_USER")}}><PersonIcon style={{ color: store.currentPage === "SEARCH_BY_USER" ? '#7CFC00' : 'black' }}></PersonIcon></IconButton>
+						<IconButton onClick={() => {changeCurrentPage("HOME_PAGE")}}>
+							<HomeIcon style={{ color: store.currentPage === "HOME_PAGE" ? '#7CFC00' : 'black'}}></HomeIcon>
+						</IconButton>
+						<IconButton onClick={() => {changeCurrentPage("SEARCH_BY_PLAYLIST")}}>
+							<GroupsIcon style={{ marginRight: '2%', color: store.currentPage === "SEARCH_BY_PLAYLIST" ? '#7CFC00' : 'black' }} ></GroupsIcon>
+						</IconButton>
+						<IconButton style={{ marginRight: '20%'}} onClick={() => {changeCurrentPage("SEARCH_BY_USER")}}>
+							<PersonIcon style={{ color: store.currentPage === "SEARCH_BY_USER" ? '#7CFC00' : 'black' }}></PersonIcon>
+						</IconButton>
 						<TextField 
 							fullWidth
 							label="Search" 
@@ -85,13 +119,20 @@ const HomeScreen = () => {
 							sx={{ marginRight: '20%', input: { color: 'white' } }}>
 						</TextField>
 						<Typography sx={{ color: 'white' }}>SORT BY</Typography>
-						<SortIcon style={{ marginLeft: "auto" }}> </SortIcon>
+						<IconButton>
+							<MenuIcon style={{ marginLeft: "auto" }}> </MenuIcon>
+							<Menu>
+								<MenuItem onClick={handleCloseMenu}>By Creation Date (Old-New)</MenuItem>
+								<MenuItem onClick={handleCloseMenu}>By Last Edit Date (Old-New)</MenuItem>
+								<MenuItem onClick={handleCloseMenu}>By Name (A-Z)</MenuItem>
+							</Menu>
+						</IconButton>
     				</Toolbar>
 				</Grid>
 			<Grid item xs={12} sm={6}>
 				<List disablePadding sx={{ width: '100%', height: '68.5vh', overflow: "hidden", overflowY: "scroll", }}>
 				{
-					store.idNamePairs.map((pair) => (
+					tempIdNamePairs.map((pair) => (
 						<ListCard
 							key={pair._id}
 							idNamePair={pair}

@@ -8,7 +8,6 @@ import List from '@mui/material/List';
 import { GlobalStoreContext } from '../store/index.js'
 import { AuthContext } from '../auth';
 import MUIErrorMessage from './MUIErrorMessage.js'
-import { getPlaylistById } from '../store/store-request-api/index.js'
 
 /*
     This React component lets us edit a loaded list, which only

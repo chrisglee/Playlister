@@ -98,8 +98,8 @@ getPlaylistById = async (req, res) => {
                     return res.status(200).json({ success: true, playlist: list })
                 }
                 else {
-                    console.log("incorrect user!");
-                    return res.status(400).json({ success: false, description: "authentication error" });
+                    console.log("another user accessing someone else playlist!");
+                    return res.status(200).json({ success: true, playlist: list })
                 }
             });
         }
@@ -144,7 +144,9 @@ getPlaylistPairs = async (req, res) => {
                             published: list.published,
                             publishDate: list.publishDate,
                             comments: list.comments,
-                            songs: list.songs
+                            songs: list.songs,
+                            creationDate: list.creationDate,
+                            lastEditDate: list.lastEditDate
                         };
                         pairs.push(pair);
                     }
@@ -183,7 +185,9 @@ getAllPlaylists = async (req, res) => {
                 published: list.published,
                 publishDate: list.publishDate,
                 comments: list.comments,
-                songs: list.songs
+                songs: list.songs,
+                creationDate: list.creationDate,
+                lastEditDate: list.lastEditDate
             };
             pairs.push(pair);
         }
@@ -233,6 +237,9 @@ updatePlaylist = async (req, res) => {
                     list.publishDate = body.playlist.publishDate;
                     list.comments = body.playlist.comments;
                     list.songs = body.playlist.songs;
+                    list.creationDate = body.playlist.creationDate;
+                    list.lastEditDate = body.playlist.lastEditDate;
+                    list,
                     list
                         .save()
                         .then(() => {
@@ -252,7 +259,7 @@ updatePlaylist = async (req, res) => {
                         })
                 }
                 else {
-                    console.log("incorrect user!");
+                    console.log("incorrecta user!");
                     return res.status(400).json({ success: false, description: "authentication error" });
                 }
             });

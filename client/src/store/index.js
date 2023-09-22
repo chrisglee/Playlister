@@ -389,7 +389,8 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], []);
+        let date = new Date().toLocaleDateString()
+        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], [], date, date);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
@@ -410,7 +411,7 @@ function GlobalStoreContextProvider(props) {
     }
 
 
-    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND CHANGE THE CURRENT PAGE
+    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
     store.loadIdNamePairs = async function () {
         async function asyncLoadIdNamePairs() 
         {
@@ -423,7 +424,7 @@ function GlobalStoreContextProvider(props) {
                     if (store.currentSearchCriteria !== null)
                     {
                         pairsArray = pairsArray.filter(function (playlist) {
-                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase()) === true
+                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
                           });
                         if (store.currentSearchCriteria === "")
                         {
@@ -444,7 +445,7 @@ function GlobalStoreContextProvider(props) {
                     console.log("API FAILED TO GET THE LIST PAIRS");
                 }
             }
-            else if (store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
+            else if (store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST || CurrentPage.SEARCH_BY_USER)
             {
                 const response = await api.getAllPlaylists();
                 if (response.data.success) 
@@ -452,39 +453,18 @@ function GlobalStoreContextProvider(props) {
                     let pairsArray = response.data.idNamePairs;
                     if (store.currentSearchCriteria !== null)
                     {
-                        pairsArray = pairsArray.filter(function (playlist) {
-                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase()) === true
-                          });
-                        if (store.currentSearchCriteria === "")
+                        if (store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
                         {
-                            pairsArray = []
+                            pairsArray = pairsArray.filter(function (playlist) {
+                                return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                              });
                         }
-                    }
-                    storeReducer({
-                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                        payload: 
+                        else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
                         {
-                            pairsArray: pairsArray,
-                            length: pairsArray.length
+                            pairsArray = pairsArray.filter(function (playlist) {
+                                return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                              });
                         }
-                        });
-                }
-                else 
-                {
-                    console.log("API FAILED TO GET THE LIST PAIRS");
-                }
-            }
-            else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-            {
-                const response = await api.getAllPlaylists();
-                if (response.data.success) 
-                {
-                    let pairsArray = response.data.idNamePairs;
-                    if (store.currentSearchCriteria !== null)
-                    {
-                        pairsArray = pairsArray.filter(function (playlist) {
-                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase()) === true
-                          });
                         if (store.currentSearchCriteria === "")
                         {
                             pairsArray = []
@@ -581,14 +561,19 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
 
-                response = await api.updatePlaylistById(playlist._id, playlist);
-                if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.SET_CURRENT_LIST,
-                        payload: playlist
-                    });
-                }
+                //WHY WAS THIS EVEN EHRE TO BEGIN WITH
+                // response = await api.updatePlaylistById(playlist._id, playlist);
+                // if (response.data.success) {
+                //     storeReducer({
+                //         type: GlobalStoreActionType.SET_CURRENT_LIST,
+                //         payload: playlist
+                //     });
+                // }
             }
         }
         asyncSetCurrentList(id);
@@ -776,17 +761,15 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
+{
+                storeReducer({
+                    type: GlobalStoreActionType.SET_EXPAND_LIST,
+                    payload: {
+                        id: playlist._id,
+                        playlist: playlist
+                    }
+                });
 
-                response = await api.updatePlaylistById(playlist._id, playlist);
-                if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.SET_EXPAND_LIST,
-                        payload: {
-                            id: playlist._id,
-                            playlist: playlist
-                        }
-                    });
-                    // history.push("/playlist/" + playlist._id);
                 }
             }
         }
@@ -799,15 +782,11 @@ function GlobalStoreContextProvider(props) {
         async function asyncSetExpandList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playlist;
 
-                response = await api.updatePlaylistById(playlist._id, playlist);
-                if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.CLOSE_EXPAND_LIST,
-                    });
-                    // history.push("/playlist/" + playlist._id);
-                }
+                storeReducer({
+                    type: GlobalStoreActionType.CLOSE_EXPAND_LIST,
+                });
+                
             }
         }
         asyncSetExpandList(id);
@@ -820,7 +799,8 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 let duplicateName = playlist.name + " Duplicate"
-                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], playlist.songs);
+                let date = new Date().toLocaleDateString()
+                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], playlist.songs, date, date);
                 if (response.status === 201) 
                 {
                     store.loadIdNamePairs();
