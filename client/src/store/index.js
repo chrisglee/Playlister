@@ -1550,7 +1550,7 @@ function GlobalStoreContextProvider(props) {
                                         {
                                             pairsArray: pairsArray,
                                             playlist: playlist,
-                                            expandedPlaylist: store.expandedPlaylist
+                                            expandedPlaylist: store.currentExpandedList
                                         }
                                         });
                                 }
