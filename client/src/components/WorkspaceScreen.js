@@ -23,7 +23,8 @@ function WorkspaceScreen() {
 
     let modalJSX = "";
     let list = "";
-    console.log(store.currentList)
+    // console.log(store)
+    // console.log(auth)
     if(!store.currentList)
     {
         history.push("/")
