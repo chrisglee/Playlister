@@ -121,7 +121,7 @@ function GlobalStoreContextProvider(props) {
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
-                    newListCounter: store.newListCounter,
+                    newListCounter: payload.length,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null

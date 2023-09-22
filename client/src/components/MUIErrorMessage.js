@@ -19,11 +19,10 @@ const style = {
     // p: 4,
 };
 
-export default function MUIErroeMessage() {
+export default function MUIErrorMessage() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     let msg = "";
-    console.log(auth.errorMessage)
     if (auth.errorMessage !== "") {
         msg = auth.errorMessage;
     }
