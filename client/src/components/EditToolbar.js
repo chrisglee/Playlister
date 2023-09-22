@@ -5,6 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RedoIcon from '@mui/icons-material/Redo';
 import UndoIcon from '@mui/icons-material/Undo';
 import CloseIcon from '@mui/icons-material/HighlightOff';
+import { useHistory } from 'react-router-dom'
+
 
 /*
     This toolbar is a functional React component that
@@ -14,6 +16,7 @@ import CloseIcon from '@mui/icons-material/HighlightOff';
 */
 function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
+    const history = useHistory();
 
     function handleAddNewSong() {
         store.addNewSong();
@@ -25,6 +28,7 @@ function EditToolbar() {
         store.redo();
     }
     function handleClose() {
+        history.push("/");
         store.closeCurrentList();
     }
     return (
