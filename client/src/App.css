@@ -53,8 +53,10 @@ body {
   border-style: solid;
   border-radius: 10px;
 }
+
+/* SPLASH SCREEN COMPONENTS */
 #splash-screen {
-  background-image: linear-gradient(to bottom, #b8b808, #636723);
+  background-image: linear-gradient(to bottom, #b6b6ce, #6c68ca);
   color: white;
   font-size: 5vw;
   border-color: black;
@@ -68,6 +70,26 @@ body {
   height:70%;
   text-align: center;
   vertical-align: center;
+}
+
+#splash-logo {
+  width: 40%;
+  height: 25%;
+}
+
+#splash-description
+{
+  font-size: 18pt;
+  align-items: center;
+  justify-content: center;
+}
+
+#splash-credit
+{
+  top: 80%;
+  font-size: 12pt;
+  align-items: center;
+  justify-content: center;
 }
 
 #edit-toolbar {
