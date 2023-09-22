@@ -26,10 +26,12 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair, selected } = props;
-    console.log(idNamePair)
+    const { idNamePair, selected, expanded } = props;
+
+    console.log(selected)
 
     function handleLoadList(event, id) {
+        event.stopPropagation();
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
             let _id = event.target.id;
@@ -39,8 +41,26 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-            store.clearAllTransactions();
+            if (!selected)
+            {
+                store.setCurrentList(id);
+                store.clearAllTransactions();
+            }
+        }
+    }
+
+    function handleExpandList(event, id) {
+        event.stopPropagation();
+        console.log("handleExpandListfor " + id);
+        if (!event.target.disabled) {
+            let _id = event.target.id;
+            if (_id.indexOf('list-card-text-') >= 0)
+                _id = ("" + _id).substring("list-card-text-".length);
+
+            console.log("select " + event.target.id);
+
+            // SELECT THE CURRENT LIST
+            store.expandList(id);
         }
     }
 
@@ -57,11 +77,11 @@ function ListCard(props) {
         setEditActive(newActive);
     }
 
-    async function handleDeleteList(event, id) {
-        event.stopPropagation();
-        let _id = event.target.id;
-        _id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
+    function handleClick(event) {
+        // DOUBLE CLICK IS FOR PLAYLIST EDIT NAME
+        if (event.detail === 2) {
+            handleToggleEdit(event)
+        }
     }
 
     function handleKeyPress(event) {
@@ -74,8 +94,9 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
-    function handleClose() {
-        store.closeCurrentList();
+    function handleCloseExpandList(event, id) {
+        event.stopPropagation();
+        store.closeExpandList(id);
     }
 
     let selectClass = "unselected-list-card";
@@ -88,24 +109,25 @@ function ListCard(props) {
     }
     let iconToggle = "";
     let workspaceToggle = ""
-    if (!store.currentList)
+    if (!expanded)
     {
         iconToggle = 
-        <IconButton onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='open'>
+        <IconButton onClick={(event) => {handleExpandList(event, idNamePair._id)}} aria-label='open'>
                 <KeyboardDoubleArrowDownIcon />
         </IconButton>
     }
     else
     {
-        if (store.currentList._id === idNamePair._id)
+        if (selected)
         {
             iconToggle = 
             <Box>
-                <IconButton onClick={(event) => {handleClose()}} aria-label='close'>
+                <IconButton onClick={(event) => {handleCloseExpandList(event, idNamePair._id)}} aria-label='close'>
                     <KeyboardDoubleArrowUpIcon />
                 </IconButton>
             </Box>
-            workspaceToggle = 
+            if (expanded)
+            workspaceToggle =
             <Box>
                 <WorkspaceScreen />
                 <EditToolbar />
@@ -115,33 +137,34 @@ function ListCard(props) {
         else
         {
             iconToggle = 
-            <IconButton onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='open'>
+            <IconButton onClick={(event) => {handleExpandList(event, idNamePair._id)}} aria-label='open'>
                 <KeyboardDoubleArrowDownIcon />
             </IconButton>
         }
     }
     let cardElement =
         <ListItem
+            onClick={(event) => {handleLoadList(event, idNamePair._id)}}
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: '#98c1d9', borderRadius: '16px' }}
+            sx={{ marginTop: '15px', display: 'flex', p: 1, borderRadius: '16px', bgcolor: selected ? '#ffb703' : '#98c1d9' }}
             style={{ width: '100%', fontSize: '48pt' }}
         >
             <Grid container>
                 <Grid item xs={8}>
-                <Typography style={{fontSize:'24pt'}}> {idNamePair.name} </Typography>
+                <Typography style={{fontSize:'24pt'}} onClick={handleClick}> {idNamePair.name} </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <ThumbUpIcon  style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbUpIcon>
+                <Typography><ThumbUpIcon style={{fontSize:'24pt', marginTop: '6px'}}></ThumbUpIcon></Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography style={{fontSize:'24pt'}}> {idNamePair.numLikes} </Typography>
+                <Typography style={{fontSize:'24pt' }}> {idNamePair.numLikes} </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <ThumbDownIcon style={{fontSize:'24pt', marginBottom: '16px'}}></ThumbDownIcon>
+                <Typography><ThumbDownIcon style={{fontSize:'24pt', marginTop: '6px'}}></ThumbDownIcon></Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography style={{fontSize:'24pt'}}> {idNamePair.numDislikes} </Typography>
+                <Typography style={{fontSize:'24pt' }}> {idNamePair.numDislikes} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUser} </Typography>
@@ -160,7 +183,38 @@ function ListCard(props) {
                 </Grid>
             </Grid>
         </ListItem>
+    if (!idNamePair.published)
+    {
+        cardElement =
+        <ListItem
+            onClick={(event) => {handleLoadList(event, idNamePair._id)}}
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{ marginTop: '15px', display: 'flex', p: 1, borderRadius: '16px', bgcolor: selected ? '#ffb703' : '#fb8500' }}
+            style={{ width: '100%', fontSize: '48pt' }}
+        >
+            <Grid container>
+                <Grid item xs={8}>
+                <Typography style={{fontSize:'24pt'}} onClick={handleClick}> {idNamePair.name} </Typography>
+                </Grid>
+                <Grid item xs={4}>
 
+                </Grid>
+                <Grid item xs={12}>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUser} </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                {workspaceToggle}
+                </Grid>
+                <Grid item xs={11}>
+
+                </Grid>
+                <Grid item xs={1}>
+                {iconToggle}
+                </Grid>
+            </Grid>
+        </ListItem>
+    }
     if (editActive) {
         cardElement =
             <TextField

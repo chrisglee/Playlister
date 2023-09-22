@@ -64,7 +64,8 @@ const HomeScreen = () => {
 						<ListCard
 							key={pair._id}
 							idNamePair={pair}
-							selected={false}
+							selected={(store.currentList !== null) && (store.currentList._id === pair._id)}
+							expanded={(store.currentExpandedList !== null) && (store.currentExpandedList === pair._id)}
 						/>
 					))
 				}

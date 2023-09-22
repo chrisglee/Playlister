@@ -188,8 +188,8 @@ body {
 
 #playlist-cards
 {
-  max-height: 33vh;
-  overflow-y: scroll;
+  max-height: 34vh;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 

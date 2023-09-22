@@ -44,7 +44,7 @@ function SongCard(props) {
     }
 
     let cardClass = "list-card unselected-list-card";
-    return (
+    let cardElement = 
         <div
             key={index}
             id={'song-' + index + '-card'}
@@ -72,6 +72,25 @@ function SongCard(props) {
                 onClick={handleRemoveSong}
             />
         </div>
+    if (store.currentList.published)
+    {
+        cardElement = 
+        <div
+            key={index}
+            id={'song-' + index + '-card'}
+            className={cardClass}
+        >
+            {index + 1}.
+            <a
+                id={'song-' + index + '-link'}
+                className="song-link"
+                href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
+                {song.title} by {song.artist}
+            </a>
+        </div>
+    }
+    return (
+        cardElement
     );
 }
 
