@@ -32,7 +32,6 @@ import YouTubePlayer from './YoutubePlayer';
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
 	const [tabIndex, setCurrentTab] = useState(0);
-	let [prevTabIndex, setPrevTab] = useState([0]);
 	const [searchText, setSearchText] = useState("");
 	const [commentText, setCommentText] = useState("");
 	const { auth } = useContext(AuthContext);
@@ -56,8 +55,6 @@ const HomeScreen = () => {
 	function handleTabChange(event, newTab) 
 	{
 		setCurrentTab(newTab);
-		let array = prevTabIndex.push(newTab)
-		console.log(prevTabIndex)
 	}
 
 	//CURRENT PAGE STUFF

@@ -14,12 +14,22 @@ export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
     const {playlist, list} = props;
+    let [prevPlaylist, addPrevPlaylist] = useState([])
     const referenceToPlayer = useRef(null);
     let [currentSong, setCurrentSong] = useState(0);
 
     useEffect(() => {
-        setCurrentSong(0)
-        store.setPlayingSongIndex(0)
+        if(store.currentList)
+        {
+            if (store.currentList._id !== prevPlaylist[prevPlaylist.length-1])
+            {
+                setCurrentSong(0)
+                store.setPlayingSongIndex(0)
+            }
+            let temp = prevPlaylist
+            temp.push(store.currentList._id)
+            addPrevPlaylist(temp)
+        }
 	}, [store.currentList]);
 
     let playerOptions = {
