@@ -16,12 +16,12 @@ function CommentCard(props) {
             className="commentCards"
         >
             <Grid container>
-                <Grid item xs={12}>
-                    <Typography style={{fontSize:'10pt', fontWeight: 'medium'}}> {commenter} </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography style={{fontSize:'16pt', fontWeight: 'medium'}}> {comment} </Typography>
-                </Grid>
+                <Box style={{fontSize:'10pt', fontWeight: 'medium', width: '750px', overflowWrap: 'break-word'}}> 
+                    {commenter}
+                </Box> 
+                <Box style={{fontSize:'16pt', fontWeight: 'medium', maxWidth: '100%', overflowWrap: 'break-word'}}> 
+                    {comment}
+                </Box> 
             </Grid>
         </ListItem>
     return (
