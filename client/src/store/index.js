@@ -37,7 +37,8 @@ export const GlobalStoreActionType = {
     CHANGE_CURRENT_PAGE: "CHANGE_CURRENT_PAGE",
     CHANGE_SEARCH_CRITERIA: "CHANGE_SEARCH_CRITERIA",
     CHANGE_SORT_TYPE: "CHANGE_SORT_TYPE",
-    UPDATE_PLAYLIST: "UPDATE PLAYLIST"
+    UPDATE_PLAYLIST: "UPDATE PLAYLIST",
+    ERROR_CHANGE_LIST_NAME : "ERROR_CHANGE_LIST_NAME"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -47,7 +48,8 @@ const CurrentModal = {
     NONE : "NONE",
     DELETE_LIST : "DELETE_LIST",
     EDIT_SONG : "EDIT_SONG",
-    REMOVE_SONG : "REMOVE_SONG"
+    REMOVE_SONG : "REMOVE_SONG",
+    EDIT_ERROR : "EDIT_ERROR"
 }
 
 const CurrentPage = {
@@ -110,12 +112,30 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
-                    idNamePairs: payload.idNamePairs,
+                    idNamePairs: store.idNamePairs,
                     currentList: payload.playlist,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentExpandedList: store.currentExpandedList,
+                    currentPage: store.currentPage,
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType
+                });
+            }
+            // FAIL CHANGE LIST NAME
+            case GlobalStoreActionType.ERROR_CHANGE_LIST_NAME: {
+                return setStore({
+                    currentModal : CurrentModal.EDIT_ERROR,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: true,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     currentExpandedList: store.currentExpandedList,
@@ -419,29 +439,48 @@ function GlobalStoreContextProvider(props) {
         // GET THE LIST
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
-            if (response.data.success) {
+            if (response.data.success) 
+            {
                 let playlist = response.data.playlist;
-                playlist.name = newName;
-                async function updateList(playlist) {
-                    response = await api.updatePlaylistById(playlist._id, playlist);
-                    if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            response = await api.getPlaylistPairs();
-                            if (response.data.success) {
-                                let pairsArray = response.data.idNamePairs;
-                                storeReducer({
-                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                    payload: {
-                                        idNamePairs: pairsArray,
-                                        playlist: playlist
-                                    }
-                                });
-                            }
+                response = await api.getPlaylistPairs();
+                if (response.data.success)
+                {
+                    let fail = false;
+                    let pairsArray = response.data.idNamePairs;
+                    for (let pair in pairsArray)
+                    {
+                        if (pairsArray[pair].name === newName)
+                        {
+                            fail = true;
                         }
-                        getListPairs(playlist);
+                    }
+                    if (fail === false)
+                    {
+                        playlist.name = newName;
+                        updateList(playlist);
+                    }
+                    async function updateList(playlist) 
+                    {
+                        response = await api.updatePlaylistById(playlist._id, playlist);
+                        if (response.data.success) {
+                            async function getListPairs(playlist) {
+                                response = await api.getPlaylistPairs();
+                                if (response.data.success) {
+                                    let pairsArray = response.data.idNamePairs;
+                                    storeReducer({
+                                        type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                        payload: {
+                                            idNamePairs: pairsArray,
+                                            playlist: playlist
+                                        }
+                                    });
+                                    store.loadIdNamePairs();
+                                }
+                            }
+                            getListPairs(playlist);
+                        }
                     }
                 }
-                updateList(playlist);
             }
         }
         asyncChangeListName(id);
@@ -456,31 +495,14 @@ function GlobalStoreContextProvider(props) {
         });
         tps.clearAllTransactions();
     }
-    
-    function checkAfterUntitled(str)
-    {
-        if (typeof str !== 'string')
-        {
-            return false;
-        }
-        let number = Number(str)
-        if (number >= 0 && Number.isInteger(number))
-        {
-            return true;
-        }
-        return false;
-    }
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () 
     {
-        let response = await api.getAllPlaylists();
+        let response = await api.getPlaylistPairs();
         if (response.data.success)
         {
             let pairsArray = response.data.idNamePairs;
-            pairsArray = pairsArray.filter(function (playlist) {
-                return (playlist.ownerUserName).toLowerCase() === (auth.user.userName.toLowerCase())
-                });
             let listNamesArray = []
             for (let pair in pairsArray)
             {
@@ -1019,13 +1041,10 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) 
             {
                 let playlist = response.data.playlist;
-                response = await api.getAllPlaylists();
+                response = await api.getPlaylistPairs();
                 if(response.data.success)
                 {
                     let pairsArray = response.data.idNamePairs;
-                    pairsArray = pairsArray.filter(function (playlist) {
-                        return (playlist.ownerUserName).toLowerCase() === (auth.user.userName.toLowerCase())
-                        });
                     let listNamesArray = [];
                     for (let pair in pairsArray)
                     {
