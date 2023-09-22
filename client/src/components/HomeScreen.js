@@ -45,6 +45,7 @@ const HomeScreen = () => {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
+                disabled={store.currentModal !== "NONE"}
             >
                 <AddIcon />
             </Fab>
