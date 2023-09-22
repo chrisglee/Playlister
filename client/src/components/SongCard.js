@@ -76,8 +76,7 @@ function SongCard(props) {
             {index + 1}.
             <a
                 id={'song-' + index + '-link'}
-                className="song-link"
-                href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
+                className="song-link">
                 {song.title} by {song.artist}
             </a>
             <input
@@ -99,8 +98,7 @@ function SongCard(props) {
             {index + 1}.
             <a
                 id={'song-' + index + '-link'}
-                className="song-link"
-                href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
+                className="song-link">
                 {song.title} by {song.artist}
             </a>
         </div>
