@@ -89,7 +89,7 @@ const HomeScreen = () => {
     }
 	function handleCommentKeyPress(event) {
         if (event.code === "Enter") {
-			store.updateAttributePlaylist(store.currentList._id, auth.user.firstName + " " + auth.user.lastName, "COMMENTS", commentText)
+			store.updateAttributePlaylist(store.currentList._id, auth.user.userName, "COMMENTS", commentText)
 			event.target.blur();
 			setCommentText("");
         }
@@ -105,13 +105,13 @@ const HomeScreen = () => {
 			newIdNamePairs = store.idNamePairs
 
 			newIdNamePairs = newIdNamePairs.filter(function (playlist) {
-				return (!(playlist.ownerFirstName !== auth.user.firstName && playlist.ownerLastName !== auth.user.lastName && !playlist.published))
+				return (!(playlist.ownerUserName !== auth.user.userName && !playlist.published))
 			});
 			
 			if (store.currentPage === "SEARCH_BY_PLAYLIST" || store.currentPage === "SEARCH_BY_USER")
 			{
 				newIdNamePairs = newIdNamePairs.filter(function (playlist) {
-					return (!(playlist.ownerFirstName === auth.user.firstName && playlist.ownerLastName === auth.user.lastName && !playlist.published))
+					return (!(playlist.ownerUserName === auth.user.userName && !playlist.published))
 				});
 			}
 		}
@@ -126,8 +126,8 @@ const HomeScreen = () => {
 		{
 			menuList = 
 			<Box>
-				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("CREATION_DATE") }}>Creation Date (Old - New)</MenuItem>
-				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LAST_EDIT_DATE") }}>Last Edit Date (Old - New)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("CREATION DATE") }}>Creation Date (Old - New)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LAST EDIT DATE") }}>Last Edit Date (Old - New)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("NAME") }}>Name (A - Z)</MenuItem>
 			</Box>
 
@@ -150,7 +150,7 @@ const HomeScreen = () => {
 			menuList = 
 			<Box>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("NAME") }}>Name (A - Z)</MenuItem>
-				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("PUBLISH_DATE") }}>Publish Date (Newest)</MenuItem>
+				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("PUBLISH DATE") }}>Publish Date (Newest)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LISTENS") }}>Listens (High - Low)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LIKES") }}>Likes (High - Low)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("DISLIKES") }}>Dislikes (High - Low)</MenuItem>
@@ -214,6 +214,19 @@ const HomeScreen = () => {
 			/>
 		}
 	}
+
+	let sortText = "";
+	if (store)
+	{
+		if (store.currentSortType === "NONE")
+		{
+			sortText = "SORT BY";
+		}
+		else
+		{
+			sortText = store.currentSortType;
+		}
+	}
 	
 
 	if (store) {
@@ -231,15 +244,14 @@ const HomeScreen = () => {
 							<PersonIcon style={{ color: store.currentPage === "SEARCH_BY_USER" ? '#7CFC00' : 'black' }}></PersonIcon>
 						</IconButton>
 						<TextField 
-							fullWidth
 							label="Search" 
 							variant="filled"
 							value={searchText}
 							onKeyPress={handleSearchKeyPress}
 							onChange={handleUpdateSearchText}
-							sx={{ marginRight: '20%', input: { color: 'white' } }}>
+							sx={{ marginRight: '0%', width: '600px', input: { color: 'white' } }}>
 						</TextField>
-						<Typography sx={{ color: 'white' }}>SORT BY</Typography>
+						<Typography sx={{ fontWeight: 'bold',color: 'white', marginLeft: '20%', width: '150px', textAlign: 'right' }}>{sortText}</Typography>
 						<IconButton onClick={handleOpenMenu}>
 							<MenuIcon style={{ marginLeft: "auto" }}> </MenuIcon>
 						</IconButton>

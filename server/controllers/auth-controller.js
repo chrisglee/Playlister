@@ -19,6 +19,7 @@ getLoggedIn = async (req, res) => {
         return res.status(200).json({
             loggedIn: true,
             user: {
+                userName: loggedInUser.userName,
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
                 email: loggedInUser.email
@@ -73,6 +74,7 @@ loginUser = async (req, res) => {
         }).status(200).json({
             success: true,
             user: {
+                userName: existingUser.userName,
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
                 email: existingUser.email              
@@ -96,9 +98,9 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { userName, firstName, lastName, email, password, passwordVerify } = req.body;
+        console.log("create user: " + userName + " " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
+        if (!userName || !firstName || !lastName || !email || !password || !passwordVerify) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -130,6 +132,15 @@ registerUser = async (req, res) => {
                     errorMessage: "An account with this email address already exists."
                 })
         }
+        const existingUserName = await User.findOne({ userName: userName });
+        if (existingUserName) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this username already exists."
+                })
+        }
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
@@ -137,7 +148,7 @@ registerUser = async (req, res) => {
         console.log("passwordHash: " + passwordHash);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            userName, firstName, lastName, email, passwordHash
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
@@ -153,6 +164,7 @@ registerUser = async (req, res) => {
         }).status(200).json({
             success: true,
             user: {
+                userName: savedUser.userName,
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,  
                 email: savedUser.email              

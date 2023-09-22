@@ -20,12 +20,19 @@ export default function RegisterScreen() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        console.log(formData.get('userName'))
+        console.log(formData.get('firstName'))
+        console.log(formData.get('lastName'))
+        console.log(formData.get('email'))
+        console.log(formData.get('password'))
+        console.log(formData.get('passwordVerify'))
         auth.registerUser(
+            formData.get('userName'),
             formData.get('firstName'),
             formData.get('lastName'),
             formData.get('email'),
             formData.get('password'),
-            formData.get('passwordVerify')
+            formData.get('passwordVerify'),
         );
     };
 
@@ -48,6 +55,17 @@ export default function RegisterScreen() {
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    autoComplete="uname"
+                                    name="userName"
+                                    required
+                                    fullWidth
+                                    id="userName"
+                                    label="User Name"
+                                    autoFocus
+                                />
+                            </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     autoComplete="fname"
@@ -56,7 +74,6 @@ export default function RegisterScreen() {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
-                                    autoFocus
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>

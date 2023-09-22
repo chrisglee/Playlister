@@ -58,10 +58,10 @@ const CurrentPage = {
 
 const CurrentSort = {
     NONE : "NONE",
-    CREATION_DATE : "CREATION_DATE",
-    LAST_EDIT_DATE : "LAST_EDIT_DATE",
+    CREATION_DATE : "CREATION DATE",
+    LAST_EDIT_DATE : "LAST EDIT DATE",
     NAME : "NAME",
-    PUBLISH_DATE : "PUBLISH_DATE",
+    PUBLISH_DATE : "PUBLISH DATE",
     LISTENS : "LISTENS",
     LIKES : "LIKES",
     DISLIKES : "DISLIKES"
@@ -72,7 +72,6 @@ const UpdateType = {
     LIKES : "LIKES",
     DISLIKES : "DISLIKES",
     COMMENTS : "COMMENTS",
-    LAST_EDIT_DATE : "LAST_EDIT_DATE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -457,28 +456,70 @@ function GlobalStoreContextProvider(props) {
         });
         tps.clearAllTransactions();
     }
+    
+    function checkAfterUntitled(str)
+    {
+        if (typeof str !== 'string')
+        {
+            return false;
+        }
+        let number = Number(str)
+        if (number >= 0 && Number.isInteger(number))
+        {
+            return true;
+        }
+        return false;
+    }
 
     // THIS FUNCTION CREATES A NEW LIST
-    store.createNewList = async function () {
-        let newListName = "Untitled" + store.newListCounter;
-        let date = Date.now();
-        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], [], date, date);
-        console.log("createNewList response: " + response);
-        if (response.status === 201) {
-            tps.clearAllTransactions();
-            let newList = response.data.playlist;
-            storeReducer({
-                type: GlobalStoreActionType.CREATE_NEW_LIST,
-                payload: newList
+    store.createNewList = async function () 
+    {
+        let response = await api.getAllPlaylists();
+        if (response.data.success)
+        {
+            let pairsArray = response.data.idNamePairs;
+            pairsArray = pairsArray.filter(function (playlist) {
+                return (playlist.ownerUserName).toLowerCase() === (auth.user.userName.toLowerCase())
+                });
+            let listNamesArray = []
+            for (let pair in pairsArray)
+            {
+                if(pairsArray[pair].name.substring(0,8) === "Untitled" && pairsArray[pair].name.substring(8,pairsArray[pair].name.length))
+                {   
+                    listNamesArray.push(Number(pairsArray[pair].name.substring(8,pairsArray[pair].name.length)))
+                }
             }
-            );
-
-            store.loadIdNamePairs();
-            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-            // history.push("/playlist/" + newList._id);
-        }
-        else {
-            console.log("API FAILED TO CREATE A NEW LIST");
+            let maxNumber = 0;
+            for (let number in listNamesArray)
+            {
+                if (maxNumber <= listNamesArray[number])
+                {
+                    maxNumber = listNamesArray[number] + 1
+                }
+            }
+            async function asyncCreateNewList()
+            {
+                let newListName = "Untitled" + maxNumber;
+                let date = Date.now();
+                response = await api.createPlaylist(newListName, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], [], date, date);
+                console.log("createNewList response: " + response);
+                if (response.status === 201) 
+                {
+                    tps.clearAllTransactions();
+                    let newList = response.data.playlist;
+                    storeReducer({
+                        type: GlobalStoreActionType.CREATE_NEW_LIST,
+                        payload: newList
+                    }
+                    );
+                    store.loadIdNamePairs();
+                }
+                else 
+                {
+                    console.log("API FAILED TO CREATE A NEW LIST");
+                }
+            }
+            asyncCreateNewList();
         }
     }
 
@@ -511,7 +552,7 @@ function GlobalStoreContextProvider(props) {
                     else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
                     {
                         pairsArray = pairsArray.filter(function (playlist) {
-                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                            return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
                             });
                     }
                 }
@@ -882,7 +923,7 @@ function GlobalStoreContextProvider(props) {
                                     else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
                                     {
                                         pairsArray = pairsArray.filter(function (playlist) {
-                                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                            return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
                                             });
                                     }
                                 }
@@ -972,20 +1013,50 @@ function GlobalStoreContextProvider(props) {
 
     //THIS FUNCTION DUPLICATES THE GIVEN LIST
     store.duplicateList = async function (id) {
-        async function asyncDuplicateList(id) {
+        async function asyncDuplicateList(id) 
+        {
             let response = await api.getPlaylistById(id);
-            if (response.data.success) {
+            if (response.data.success) 
+            {
                 let playlist = response.data.playlist;
-                let duplicateName = playlist.name + " Duplicate"
-                let date = Date.now()
-                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], playlist.songs, date, date);
-                if (response.status === 201) 
+                response = await api.getAllPlaylists();
+                if(response.data.success)
                 {
-                    store.loadIdNamePairs();
-                }
-                else 
-                {
-                    console.log("API FAILED TO DUPLICATE A LIST");
+                    let pairsArray = response.data.idNamePairs;
+                    pairsArray = pairsArray.filter(function (playlist) {
+                        return (playlist.ownerUserName).toLowerCase() === (auth.user.userName.toLowerCase())
+                        });
+                    let listNamesArray = [];
+                    for (let pair in pairsArray)
+                    {
+                        if(pairsArray[pair].name.substring(0,playlist.name.length) === playlist.name && pairsArray[pair].name.substring(playlist.name.length,pairsArray[pair].name.length))
+                        {   
+                            listNamesArray.push(Number(pairsArray[pair].name.substring(playlist.name.length,pairsArray[pair].name.length)))
+                        }
+                    }
+                    let maxNumber = 0;
+                    for (let number in listNamesArray)
+                    {
+                        if (maxNumber <= listNamesArray[number])
+                        {
+                            maxNumber = listNamesArray[number] + 1
+                        }
+                    }
+                    async function asyncFilterThenCreate()
+                    {
+                        let duplicateName = playlist.name + " " + maxNumber
+                        let date = Date.now()
+                        response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], playlist.songs, date, date);
+                        if (response.status === 201) 
+                        {
+                            store.loadIdNamePairs();
+                        }
+                        else 
+                        {
+                            console.log("API FAILED TO DUPLICATE A LIST");
+                        }
+                    }
+                    asyncFilterThenCreate()
                 }
             }
         }
@@ -1093,7 +1164,7 @@ function GlobalStoreContextProvider(props) {
                                     else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
                                     {
                                         pairsArray = pairsArray.filter(function (playlist) {
-                                            return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                            return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
                                             });
                                     }
                                 }

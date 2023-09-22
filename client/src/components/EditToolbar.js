@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import RedoIcon from '@mui/icons-material/Redo';
 import UndoIcon from '@mui/icons-material/Undo';
-import CloseIcon from '@mui/icons-material/HighlightOff';
 import { useHistory } from 'react-router-dom'
 
 
@@ -48,7 +47,7 @@ function EditToolbar() {
     {
         if (store.currentList)
         {
-            if(store.currentList.ownerFirstName === auth.user.firstName && store.currentList.ownerLastName === auth.user.lastName)
+            if(store.currentList.ownerUserName === auth.user.userName)
             {
                 toolbar = 
                 <div id="edit-toolbar">

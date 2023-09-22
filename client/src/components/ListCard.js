@@ -85,7 +85,7 @@ function ListCard(props) {
 
     function handleClick(event) {
         // DOUBLE CLICK IS FOR PLAYLIST EDIT NAME
-        if (event.detail === 2) {
+        if (event.detail === 2 && auth.user.userName === store.currentList.ownerUserName) {
             handleToggleEdit(event)
         }
     }
@@ -109,8 +109,7 @@ function ListCard(props) {
     {
         if (auth)
         {
-            let user = auth.user.firstName + " " + auth.user.lastName;
-            store.updateAttributePlaylist(id, user, "LIKES");
+            store.updateAttributePlaylist(id, auth.user.userName, "LIKES");
         }
     }
 
@@ -118,8 +117,7 @@ function ListCard(props) {
     {
         if (auth)
         {
-            let user = auth.user.firstName + " " + auth.user.lastName;
-            store.updateAttributePlaylist(id, user, "DISLIKES");
+            store.updateAttributePlaylist(id, auth.user.userName, "DISLIKES");
         }
     }
 
@@ -181,7 +179,7 @@ function ListCard(props) {
                 <Grid item xs={1}>
                 <Typography>
                 <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
-                        <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.firstName + " " + auth.user.lastName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
+                        <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.userName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
                     </IconButton>
                 </Typography>
                 </Grid>
@@ -191,7 +189,7 @@ function ListCard(props) {
                 <Grid item xs={1}>
                 <Typography>
                     <IconButton onClick={(event) => {handleDislike(event, idNamePair._id)}}>
-                        <ThumbDownIcon style={{fontSize:'24pt', color: idNamePair.userDislikes.includes(auth.user.firstName + " " + auth.user.lastName) ? '#f44336' : 'black'}}></ThumbDownIcon>
+                        <ThumbDownIcon style={{fontSize:'24pt', color: idNamePair.userDislikes.includes(auth.user.userName) ? '#f44336' : 'black'}}></ThumbDownIcon>
                     </IconButton>
                 </Typography>
                 </Grid>
@@ -199,7 +197,7 @@ function ListCard(props) {
                 <Typography style={{fontSize:'24pt' }}> {idNamePair.numDislikes} </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName} </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUserName} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}
@@ -233,7 +231,7 @@ function ListCard(props) {
 
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName} </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUserName} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}
