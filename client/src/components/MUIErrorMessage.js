@@ -16,7 +16,7 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    // p: 4,
 };
 
 export default function MUIErroeMessage() {
@@ -37,7 +37,7 @@ export default function MUIErroeMessage() {
             open={auth.errorMessage !== ""}
         >
             <Box sx={style}>
-                <div className="modal-dialog">
+                <div className="modal-root">
                 <header className="dialog-header">
                     Error Message
                 </header>

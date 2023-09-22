@@ -13,7 +13,7 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    // p: 4,
 };
 
 export default function MUIDeleteModal() {
@@ -34,10 +34,15 @@ export default function MUIDeleteModal() {
             open={store.listMarkedForDeletion !== null}
         >
             <Box sx={style}>
-                <div className="modal-dialog">
-                <header className="dialog-header">
-                    Delete the {name} Top 5 List?
-                </header>
+                <div className="modal-root">
+                <div className="modal-north">
+                Delete the {name} playlist?
+                </div>
+                <div className="modal-center">
+                    <div className="modal-center-content">
+                        Are you sure you wish to permanently delete the <span className="modal-span">{name}</span> playlist?
+                    </div>
+                </div>
                 <div id="confirm-cancel-container">
                     <button
                         id="dialog-yes-button"
