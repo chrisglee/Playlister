@@ -1158,6 +1158,12 @@ function GlobalStoreContextProvider(props) {
                     {
                         playlist.userLikes.push(user)
                         playlist.numLikes++
+                        if (playlist.userDislikes.includes(user))
+                        {
+                            let index = playlist.userDislikes.indexOf(user);
+                            playlist.userDislikes.splice(index, 1)
+                            playlist.numDislikes--
+                        }
                     }
                     else
                     {
@@ -1180,6 +1186,12 @@ function GlobalStoreContextProvider(props) {
                     {
                         playlist.userDislikes.push(user)
                         playlist.numDislikes++
+                        if (playlist.userLikes.includes(user))
+                        {
+                            let index = playlist.userLikes.indexOf(user);
+                            playlist.userLikes.splice(index, 1)
+                            playlist.numLikes--
+                        }
                     }
                     else
                     {
