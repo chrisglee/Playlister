@@ -71,7 +71,8 @@ const UpdateType = {
     LISTENS : "LISTENS",
     LIKES : "LIKES",
     DISLIKES : "DISLIKES",
-    COMMENTS : "COMMENTS"
+    COMMENTS : "COMMENTS",
+    LAST_EDIT_DATE : "LAST_EDIT_DATE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -757,12 +758,15 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
+            let date = Date.now()
+            store.currentList.lastEditDate = date;
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
             if (response.data.success) {
                 storeReducer({
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: store.currentList
                 });
+                store.loadIdNamePairs()
             }
         }
         asyncUpdateCurrentList();
