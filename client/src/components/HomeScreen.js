@@ -47,8 +47,6 @@ const HomeScreen = () => {
 		}
 	}, [store.currentPage, store.currentSearchCriteria, store.currentSortType]);
 
-	console.log(store.currentList)
-
 	function handleCreateNewList() {
 		store.createNewList();
 	}

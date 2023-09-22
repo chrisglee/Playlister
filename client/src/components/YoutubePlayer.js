@@ -15,28 +15,18 @@ export default function YouTubePlayer(props) {
 
     const { store } = useContext(GlobalStoreContext);
     const {playlist, list} = props;
+    let [currentSong, setCurrentSong] = useState(0);
 
-    const [value, setValue] = useState("");
-    // useEffect(() => { 
-    //     console.log(store.currentList)
-    // }, [store.currentList])
-    
-    // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
-    // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
-    // DEMONSTRATES HOW TO IMPLEMENT A PLAYLIST THAT MOVES
-    // FROM ONE SONG TO THE NEXT
-
-    // THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
-
-    // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
-    let currentSong = 0;
+    useEffect(() => {
+        setCurrentSong(0)
+	}, [store.currentList]);
 
     const playerOptions = {
         height: '390',
         width: '640',
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
-            autoplay: 0,
+            autoplay: 1,
         },
     };
 
@@ -52,6 +42,7 @@ export default function YouTubePlayer(props) {
     function incSong() {
         currentSong++;
         currentSong = currentSong % playlist.length;
+        setCurrentSong(currentSong)
     }
 
     function onPlayerReady(event) {
@@ -92,6 +83,10 @@ export default function YouTubePlayer(props) {
     let playerComponent = ""
     if (store.currentList)
     {
+        
+    
+    if (store.currentList.songs.length > 0 && store.currentList.songs[currentSong])
+    {
         playerComponent = 
         <Box>
             <Grid container columns={13} sx={{bgcolor: "#fffff1", borderRadius: '16px'}}>
@@ -105,10 +100,10 @@ export default function YouTubePlayer(props) {
                     <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Song #: {currentSong + 1} </Typography>
                 </Grid>
                 <Grid item xs={13}>
-                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Title: </Typography>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Title: {store.currentList.songs[currentSong].title} </Typography>
                 </Grid>
                 <Grid item xs={13}>
-                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Artist: </Typography>
+                    <Typography sx={{textAlign:"left", fontWeight: 'bold'}}> Artist: {store.currentList.songs[currentSong].artist}</Typography>
                 </Grid>
                 <Grid item xs={13}>
                 <YouTube
@@ -189,7 +184,7 @@ export default function YouTubePlayer(props) {
             </Grid>
         </Box>
     }
-
+    }
     return (
         playerComponent
     )
