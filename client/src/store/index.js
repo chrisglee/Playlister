@@ -574,6 +574,7 @@ function GlobalStoreContextProvider(props) {
                     if (!fail)
                     {
                         playlist.name = newName;
+                        playlist.lastEditDate = Date.now();
                         updateList(playlist);
                     }
                     else
