@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -18,6 +18,8 @@ import SortIcon from "@mui/icons-material/Sort";
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 /*
 	This React component lists all the top5 lists in the UI.
 	
@@ -25,6 +27,10 @@ import Typography from '@mui/material/Typography'
 */
 const HomeScreen = () => {
 	const { store } = useContext(GlobalStoreContext);
+	const [tabIndex, setTabIndex] = useState(0);
+	const handleTabChange = (event, newTabIndex) => {
+		setTabIndex(newTabIndex);
+	  };
 
 	useEffect(() => {
 		store.loadIdNamePairs();
@@ -38,22 +44,21 @@ const HomeScreen = () => {
 		listCard = 
 			<Grid container>
 				<Grid item xs={12}>
-    				<Toolbar>
+    				<Toolbar sx={{bgcolor: '#3d5a80'}} variant="dense">
 						<HomeIcon style={{ marginRight: 20 }}></HomeIcon>
 						<GroupsIcon style={{ marginRight: 20 }} ></GroupsIcon>
 						<PersonIcon style={{ marginRight: 350 }}></PersonIcon>
 						<TextField 
-							id="outlined-basic" 
 							label="Search" 
-							variant="outlined"
+							variant="filled"
 							style={{ marginRight: 400 }}>
 						</TextField>
 						<Typography>SORT BY</Typography>
 						<SortIcon style={{ marginLeft: "auto" }}> </SortIcon>
     				</Toolbar>
 				</Grid>
-			<Grid item xs={12} sm={7}>
-				<List disablePadding sx={{ width: '100%', height: '90%', overflow: "hidden", overflowY: "scroll", }}>
+			<Grid item xs={12} sm={6}>
+				<List disablePadding sx={{ width: '100%', height: '80%', overflow: "hidden", overflowY: "scroll", }}>
 				{
 					store.idNamePairs.map((pair) => (
 						<ListCard
@@ -65,9 +70,12 @@ const HomeScreen = () => {
 				}
 				</List>
 			</Grid>
-			<Grid item xs={12} sm={5}>
-				<Box sx={{ width: '100%', height: '90%'}}>
-					hello
+			<Grid item xs={12} sm={6}>
+				<Box sx={{ width: '100%', height: '80%'}}>
+					<Tabs value={tabIndex} onChange={handleTabChange}>
+        				<Tab label="Player" />
+        				<Tab label="Comments" />
+      				</Tabs>
 				</Box>
 			</Grid>
 		</Grid>

@@ -4,8 +4,12 @@ import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+import { Collapse } from '@mui/material';
+import WorkspaceScreen from './WorkspaceScreen';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -65,6 +69,9 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
+    function handleClose() {
+        store.closeCurrentList();
+    }
 
     let selectClass = "unselected-list-card";
     if (selected) {
@@ -74,16 +81,40 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+    let iconToggle = "";
+    if (!store.currentList)
+    {
+        iconToggle = 
+        <IconButton onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='open'>
+                <KeyboardDoubleArrowDownIcon />
+        </IconButton>
+    }
+    else
+    {
+        if (store.currentList._id === idNamePair._id)
+        {
+            iconToggle = 
+            <Box>
+                <WorkspaceScreen />
+                <IconButton onClick={(event) => {handleClose()}} aria-label='close'>
+                    <KeyboardDoubleArrowUpIcon />
+                </IconButton>
+            </Box>
+        }
+        else
+        {
+            iconToggle = 
+            <IconButton onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='open'>
+                <KeyboardDoubleArrowDownIcon />
+            </IconButton>
+        }
+    }
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: '#98c1d9', borderRadius: '16px' }}
             style={{ width: '100%', fontSize: '48pt' }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
         >
             <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
             <Box sx={{ p: 1 }}>
@@ -92,12 +123,11 @@ function ListCard(props) {
                 </IconButton>
             </Box>
             <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
+                <IconButton onClick={(event) => {handleDeleteList(event, idNamePair._id)}} aria-label='delete'>
                     <DeleteIcon style={{fontSize:'48pt'}} />
                 </IconButton>
             </Box>
+            {iconToggle}
         </ListItem>
 
     if (editActive) {
