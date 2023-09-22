@@ -16,7 +16,6 @@ import Logo from '../images/logo.png'
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
-    const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
 
@@ -73,13 +72,9 @@ export default function AppBanner() {
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>        
 
-    // let editToolbar = "";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
-        // if (store.currentList) {
-        //     editToolbar = <EditToolbar />;
-        // }
     }
     
     function getAccountMenu(loggedIn) {
@@ -102,7 +97,6 @@ export default function AppBanner() {
                     >
                         <Link style={{ textDecoration: 'none', color: 'white' }} to='/'><img id="splash-logo" src={Logo} /></Link>
                     </Typography>
-                    {/* <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box> */}
                     <Box sx={{ marginLeft:"auto", display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
                             size="large"

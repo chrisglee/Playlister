@@ -13,9 +13,6 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 600,
     bgcolor: 'background.paper',
-    // border: '2px solid #000',
-    // boxShadow: 24,
-    // p: 4,
 };
 
 export default function ListEditFail() {
@@ -38,8 +35,6 @@ export default function ListEditFail() {
                 <Alert severity="error">{msg}</Alert>
                 <div id="confirm-cancel-container">
                     <Button
-                        // id="dialog-yes-button"
-                        // className="modal-button"
                         onClick={handleCloseModal}
                     >Confirm</Button>
                 </div>

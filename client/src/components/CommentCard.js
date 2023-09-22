@@ -4,10 +4,8 @@ import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import ListItem from '@mui/material/ListItem';
-import Typography from '@mui/material/Typography'
 
 function CommentCard(props) {
-    const { store } = useContext(GlobalStoreContext);
     const { commenter, comment } = props;
 
     let cardElement = 
