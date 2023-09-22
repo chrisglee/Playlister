@@ -1,0 +1,426 @@
+[{
+  "_id": {
+    "$oid": "6390df0b927d2234245bb5a9"
+  },
+  "userLikes": [
+    "EugeneCool"
+  ],
+  "userDislikes": [
+    "McKenna"
+  ],
+  "name": "Nicest",
+  "ownerEmail": "cse320",
+  "ownerUserName": "EugeneCool",
+  "ownerFirstName": "Eugene",
+  "ownerLastName": "Stark",
+  "numLikes": 641,
+  "numDislikes": 321,
+  "listens": 15,
+  "published": true,
+  "publishDate": {
+    "$numberLong": "1670438929003"
+  },
+  "comments": [
+    {
+      "_id": {
+        "$oid": "6390e41d927d2234245bbfc4"
+      },
+      "username": "McKenna",
+      "content": "terrible"
+    },
+    {
+      "_id": {
+        "$oid": "6390e437927d2234245bc049"
+      },
+      "username": "EugeneCool",
+      "content": "meh"
+    }
+  ],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390dfa9927d2234245bb6df"
+      },
+      "title": "first",
+      "artist": "second",
+      "youTubeId": "e0_V8IoYSLU"
+    },
+    {
+      "_id": {
+        "$oid": "6390dfa9927d2234245bb6e0"
+      },
+      "title": "third",
+      "artist": "fourth",
+      "youTubeId": "EGXPAoyP_cg"
+    },
+    {
+      "_id": {
+        "$oid": "6390dfa9927d2234245bb6e1"
+      },
+      "title": "fifth",
+      "artist": "sixth",
+      "youTubeId": "eplzPG_7rCE"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670438667233"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670438825311"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670438667252"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670440041954"
+    }
+  },
+  "__v": 24
+},{
+  "_id": {
+    "$oid": "6390df27927d2234245bb5d9"
+  },
+  "userLikes": [],
+  "userDislikes": [
+    "EugeneCool",
+    "McKenna"
+  ],
+  "name": "Cool",
+  "ownerEmail": "cse320",
+  "ownerUserName": "EugeneCool",
+  "ownerFirstName": "Eugene",
+  "ownerLastName": "Stark",
+  "numLikes": 75,
+  "numDislikes": 102,
+  "listens": 19,
+  "published": true,
+  "publishDate": {
+    "$numberLong": "1670438936057"
+  },
+  "comments": [
+    {
+      "_id": {
+        "$oid": "6390e421927d2234245bbfdf"
+      },
+      "username": "McKenna",
+      "content": "bad"
+    },
+    {
+      "_id": {
+        "$oid": "6390e444927d2234245bc066"
+      },
+      "username": "EugeneCool",
+      "content": "u guys have terrible taste"
+    }
+  ],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390df3e927d2234245bb671"
+      },
+      "title": "random",
+      "artist": "songs",
+      "youTubeId": "fEn339bmHuI"
+    },
+    {
+      "_id": {
+        "$oid": "6390dffa927d2234245bb75d"
+      },
+      "title": "found",
+      "artist": "on",
+      "youTubeId": "Hh9yZWeTmVM"
+    },
+    {
+      "_id": {
+        "$oid": "6390dffa927d2234245bb75e"
+      },
+      "title": "cse316",
+      "artist": "blackboard",
+      "youTubeId": "HYsz1hP0BFo"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670438695422"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670438906448"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670438695442"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670440042597"
+    }
+  },
+  "__v": 32
+},{
+  "_id": {
+    "$oid": "6390e1db927d2234245bbb68"
+  },
+  "userLikes": [],
+  "userDislikes": [],
+  "name": "Unfinished",
+  "ownerEmail": "cse320",
+  "ownerUserName": "EugeneCool",
+  "ownerFirstName": "Eugene",
+  "ownerLastName": "Stark",
+  "numLikes": 0,
+  "numDislikes": 0,
+  "listens": 2,
+  "published": false,
+  "publishDate": -1,
+  "comments": [],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390e212927d2234245bbbd9"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "jYSlpC6Ud2A"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670439387338"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670439470262"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670439387352"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670439470276"
+    }
+  },
+  "__v": 4
+},{
+  "_id": {
+    "$oid": "6390e276927d2234245bbc23"
+  },
+  "userLikes": [
+    "EugeneCool",
+    "McKenna"
+  ],
+  "userDislikes": [],
+  "name": "cse316 lectures",
+  "ownerEmail": "cse316",
+  "ownerUserName": "McKenna",
+  "ownerFirstName": "Mc",
+  "ownerLastName": "Kenna",
+  "numLikes": 414,
+  "numDislikes": 21,
+  "listens": 10,
+  "published": true,
+  "publishDate": {
+    "$numberLong": "1670439772074"
+  },
+  "comments": [
+    {
+      "_id": {
+        "$oid": "6390e426927d2234245bbffa"
+      },
+      "username": "McKenna",
+      "content": "my playlist is cool"
+    },
+    {
+      "_id": {
+        "$oid": "6390e452927d2234245bc083"
+      },
+      "username": "EugeneCool",
+      "content": "so cool"
+    }
+  ],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390e2ce927d2234245bbcda"
+      },
+      "title": "java",
+      "artist": "script",
+      "youTubeId": "lPYEfpAGQxw"
+    },
+    {
+      "_id": {
+        "$oid": "6390e2ce927d2234245bbcdb"
+      },
+      "title": "sql",
+      "artist": "good",
+      "youTubeId": "MEkaqZecpUQ"
+    },
+    {
+      "_id": {
+        "$oid": "6390e2ce927d2234245bbcdc"
+      },
+      "title": "mongo",
+      "artist": "db",
+      "youTubeId": "n61ULEU7CO0"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670439542554"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670439630774"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670439542566"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670440043402"
+    }
+  },
+  "__v": 18
+},{
+  "_id": {
+    "$oid": "6390e280927d2234245bbc67"
+  },
+  "userLikes": [],
+  "userDislikes": [],
+  "name": "soda",
+  "ownerEmail": "cse316",
+  "ownerUserName": "McKenna",
+  "ownerFirstName": "Mc",
+  "ownerLastName": "Kenna",
+  "numLikes": 0,
+  "numDislikes": 0,
+  "listens": 5,
+  "published": false,
+  "publishDate": -1,
+  "comments": [],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390e327927d2234245bbd5d"
+      },
+      "title": "sprite",
+      "artist": "gingerale",
+      "youTubeId": "QsuAKlNe_rI"
+    },
+    {
+      "_id": {
+        "$oid": "6390e2e3927d2234245bbcfa"
+      },
+      "title": "coke",
+      "artist": "coke",
+      "youTubeId": "PDJLvF1dUek"
+    },
+    {
+      "_id": {
+        "$oid": "6390e327927d2234245bbd5e"
+      },
+      "title": "lemon",
+      "artist": "soda",
+      "youTubeId": "TxHDgYudt6I"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670439552482"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670439752070"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670439552492"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670439752082"
+    }
+  },
+  "__v": 13
+},{
+  "_id": {
+    "$oid": "6390e32d927d2234245bbd6c"
+  },
+  "userLikes": [
+    "EugeneCool",
+    "McKenna"
+  ],
+  "userDislikes": [],
+  "name": "soda duplicated",
+  "ownerEmail": "cse316",
+  "ownerUserName": "McKenna",
+  "ownerFirstName": "Mc",
+  "ownerLastName": "Kenna",
+  "numLikes": 102,
+  "numDislikes": 5,
+  "listens": 9,
+  "published": true,
+  "publishDate": {
+    "$numberLong": "1670439759170"
+  },
+  "comments": [
+    {
+      "_id": {
+        "$oid": "6390e42b927d2234245bc015"
+      },
+      "username": "McKenna",
+      "content": "awesome"
+    },
+    {
+      "_id": {
+        "$oid": "6390e458927d2234245bc0a0"
+      },
+      "username": "EugeneCool",
+      "content": "i prefer diet coke"
+    }
+  ],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "6390e2e3927d2234245bbcfa"
+      },
+      "title": "coke",
+      "artist": "coke",
+      "youTubeId": "PDJLvF1dUek"
+    },
+    {
+      "_id": {
+        "$oid": "6390e327927d2234245bbd5d"
+      },
+      "title": "sprite",
+      "artist": "gingerale",
+      "youTubeId": "QsuAKlNe_rI"
+    },
+    {
+      "_id": {
+        "$oid": "6390e327927d2234245bbd5e"
+      },
+      "title": "lemon",
+      "artist": "soda",
+      "youTubeId": "TxHDgYudt6I"
+    }
+  ],
+  "creationDate": {
+    "$numberLong": "1670439725190"
+  },
+  "lastEditDate": {
+    "$numberLong": "1670439741044"
+  },
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670439725205"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670440044279"
+    }
+  },
+  "__v": 16
+}]

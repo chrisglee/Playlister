@@ -1,0 +1,81 @@
+[{
+  "_id": {
+    "$oid": "6390def5927d2234245bb59e"
+  },
+  "playlists": [
+    {
+      "$oid": "6390df0b927d2234245bb5a9"
+    },
+    {
+      "$oid": "6390df27927d2234245bb5d9"
+    },
+    {
+      "$oid": "6390e09a927d2234245bb83f"
+    },
+    {
+      "$oid": "6390e09b927d2234245bb856"
+    },
+    {
+      "$oid": "6390e0c4927d2234245bb940"
+    },
+    {
+      "$oid": "6390e18b927d2234245bba3e"
+    },
+    {
+      "$oid": "6390e18e927d2234245bba4e"
+    },
+    {
+      "$oid": "6390e1ae927d2234245bbad9"
+    },
+    {
+      "$oid": "6390e1db927d2234245bbb68"
+    }
+  ],
+  "userName": "EugeneCool",
+  "firstName": "Eugene",
+  "lastName": "Stark",
+  "email": "cse320",
+  "passwordHash": "$2a$10$de2UlGnMjKy0EoFU07YevOamp4AHhwsTjNqgRtI9mM57AmwDxDM4G",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670438645073"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670439387350"
+    }
+  },
+  "__v": 9
+},{
+  "_id": {
+    "$oid": "6390e259927d2234245bbc18"
+  },
+  "playlists": [
+    {
+      "$oid": "6390e276927d2234245bbc23"
+    },
+    {
+      "$oid": "6390e280927d2234245bbc67"
+    },
+    {
+      "$oid": "6390e32d927d2234245bbd6c"
+    }
+  ],
+  "userName": "McKenna",
+  "firstName": "Mc",
+  "lastName": "Kenna",
+  "email": "cse316",
+  "passwordHash": "$2a$10$n6yjGNTuVrizjO3LOy1Wdu/xfU5jNbt0PhhWPJ6v5H91Plg6r6IaC",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670439513014"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670439725203"
+    }
+  },
+  "__v": 3
+}]
