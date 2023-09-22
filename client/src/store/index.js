@@ -435,8 +435,8 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        let date = new Date().toLocaleDateString()
-        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], [], date, date);
+        let date = Date.now();
+        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], [], date, date);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
@@ -863,8 +863,8 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 let duplicateName = playlist.name + " Duplicate"
-                let date = new Date().toLocaleDateString()
-                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], playlist.songs, date, date);
+                let date = Date.now()
+                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, -1, [], playlist.songs, date, date);
                 if (response.status === 201) 
                 {
                     store.loadIdNamePairs();

@@ -178,7 +178,7 @@ function ListCard(props) {
                 {workspaceToggle}
                 </Grid>
                 <Grid item xs={6}>
-                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Published: {idNamePair.publishDate} </Typography>
+                <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Published: {new Date(idNamePair.publishDate).toLocaleDateString()} </Typography>
                 </Grid>
                 <Grid item xs={5}>
                 <Typography style={{fontSize:'8pt', marginTop: '40px'}}> Listens: {idNamePair.listens} </Typography>

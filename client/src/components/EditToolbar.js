@@ -34,7 +34,7 @@ function EditToolbar() {
     }
     async function handlePublishList() 
     {
-        let date = new Date().toLocaleDateString()
+        let date = Date.now();
         store.publishList(store.currentList._id, date);
     }
     async function handleDeleteList() 
