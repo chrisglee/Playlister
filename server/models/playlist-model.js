@@ -10,7 +10,8 @@ const playlistSchema = new Schema(
     {
         name: { type: String, required: true },
         ownerEmail: { type: String, required: true },
-        ownerUser: { type: String, required: true },
+        ownerFirstName: { type: String, required: true },
+        ownerLastName: { type: String, required: true },
         numLikes: { type: Number, required: true },
         userLikes: { type: [String], required: true },
         numDislikes: { type: Number, required: true },

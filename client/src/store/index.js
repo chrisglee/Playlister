@@ -140,7 +140,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload,
-                    currentList: null,
+                    currentList: store.currentList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: payload.length,
@@ -321,7 +321,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName);
+        const response = await api.createPlaylist(newListName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], []);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
@@ -340,6 +340,7 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
     }
+
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
@@ -663,6 +664,27 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncSetExpandList(id);
+    }
+
+    //THIS FUNCTION DUPLICATES THE GIVEN LIST
+    store.duplicateList = async function (id) {
+        async function asyncDuplicateList(id) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                let duplicateName = playlist.name + " Duplicate"
+                response = await api.createPlaylist(duplicateName, auth.user.email, auth.user.firstName, auth.user.lastName, 0, [], 0, [], 0, false, "Not Set", [], playlist.songs);
+                if (response.status === 201) 
+                {
+                    store.loadIdNamePairs();
+                }
+                else 
+                {
+                    console.log("API FAILED TO DUPLICATE A LIST");
+                }
+            }
+        }
+        asyncDuplicateList(id);
     }
 
     return (

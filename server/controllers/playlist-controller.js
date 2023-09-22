@@ -134,7 +134,8 @@ getPlaylistPairs = async (req, res) => {
                             _id: list._id,
                             name: list.name,
                             ownerEmail: list.ownerEmail,
-                            ownerUser: list.ownerUser,
+                            ownerFirstName: list.ownerFirstName,
+                            ownerLastName: list.ownerLastName,
                             numLikes: list.numLikes,
                             userLikes: list.userLikes,
                             numDislikes: list.numDislikes,
@@ -199,7 +200,8 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.ownerEmail = body.playlist.ownerEmail;
-                    list.ownerUser = body.playlist.ownerUser; 
+                    list.ownerFirstName = body.playlist.ownerFirstName; 
+                    list.ownerLastName = body.playlist.ownerLastName; 
                     list.numLikes = body.playlist.numLikes;
                     list.userLikes = body.playlist.userLikes;
                     list.numDislikes = body.playlist.numDislikes;

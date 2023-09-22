@@ -29,6 +29,7 @@ function ListCard(props) {
     const { idNamePair, selected, expanded } = props;
 
     console.log(selected)
+    console.log(idNamePair)
 
     function handleLoadList(event, id) {
         event.stopPropagation();
@@ -174,7 +175,7 @@ function ListCard(props) {
                 <Typography style={{fontSize:'24pt' }}> {idNamePair.numDislikes} </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUser} </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}
@@ -208,7 +209,7 @@ function ListCard(props) {
 
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerUser} </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName} </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}

@@ -41,6 +41,10 @@ function EditToolbar() {
     {
         store.markListForDeletion(store.currentList._id);
     }
+    async function handleDuplicateList() 
+    {
+        store.duplicateList(store.currentList._id)
+    }
     return (
         <div id="edit-toolbar">
             <div id = "playlist-toolbar">
@@ -84,6 +88,7 @@ function EditToolbar() {
             <Button
                 disabled={store.currentModal !== "NONE"}
                 id='duplicate-playlist-button'
+                onClick={handleDuplicateList}
                 variant="contained">
                 Duplicate
             </Button>
