@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
+import { AuthContext } from '../auth'
 import { Typography } from '@mui/material'
 
 /*
@@ -9,13 +10,20 @@ import { Typography } from '@mui/material'
 */
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
-    let text ="";
+    const { auth } = useContext(AuthContext)
+    let text = "";
+    let statusBarElement = "";
     if (store.currentList)
         text = store.currentList.name;
-    return (
+    if (auth.loggedIn)
+    {
+        statusBarElement =
         <div id="playlister-statusbar">
             <Typography variant="h4">{text}</Typography>
         </div>
+    }
+    return (
+        statusBarElement
     );
 }
 
