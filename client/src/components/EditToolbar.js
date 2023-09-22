@@ -17,7 +17,6 @@ import { useHistory } from 'react-router-dom'
 function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const history = useHistory();
 
     function handleAddNewSong(event) {
         event.stopPropagation();

@@ -1,9 +1,22 @@
 import { Link } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
+import AuthContext from '../auth';
 import Button from '@mui/material/Button';
 import Logo from '../images/logo.png'
 
 export default function SplashScreen() {
+
+    const { auth } = useContext(AuthContext);
+    const history = useHistory();
+
+    function loginAsGuest()
+    {
+        auth.loggedIn = true;
+        auth.user = null;
+        history.push("/");
+    }
 
     return (
         <div id="splash-screen">
@@ -22,6 +35,7 @@ export default function SplashScreen() {
                 <Link style={{ textDecoration: 'none', color: 'white' }} to='/login/'>Login</Link>
             </Button>
             <Button
+                onClick={loginAsGuest}
                 id="splash-guest-button"
                 variant="contained">
                 Continue As Guest

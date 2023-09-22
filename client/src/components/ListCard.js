@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
@@ -28,8 +28,15 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
 
+    useEffect(() => {
+		if (store.currentEditString === null)
+        {
+            setEditActive(false)
+        }
+	}, [store.currentEditString]);
+
     function handleLoadList(event, id) {
-        event.stopPropagation();
+        // event.stopPropagation();
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
             let _id = event.target.id;
@@ -85,16 +92,16 @@ function ListCard(props) {
 
     function handleClick(event) {
         // DOUBLE CLICK IS FOR PLAYLIST EDIT NAME
-        if (event.detail === 2 && auth.user.userName === store.currentList.ownerUserName) {
-            handleToggleEdit(event)
-        }
+            if (event.detail === 2 && auth.user.userName === store.currentList.ownerUserName) {
+                handleToggleEdit(event)
+            }
     }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
-            toggleEdit();
+            // toggleEdit();
         }
     }
     function handleUpdateText(event) {
@@ -107,6 +114,7 @@ function ListCard(props) {
 
     function handleLike(event, id)
     {
+        event.stopPropagation();
         if (auth)
         {
             store.updateAttributePlaylist(id, auth.user.userName, "LIKES");
@@ -115,6 +123,7 @@ function ListCard(props) {
 
     function handleDislike(event, id)
     {
+        event.stopPropagation();
         if (auth)
         {
             store.updateAttributePlaylist(id, auth.user.userName, "DISLIKES");
@@ -164,6 +173,7 @@ function ListCard(props) {
             </IconButton>
         }
     }
+    
     let cardElement =
         <ListItem
             onClick={(event) => {handleLoadList(event, idNamePair._id)}}
@@ -178,7 +188,7 @@ function ListCard(props) {
                 </Grid>
                 <Grid item xs={1}>
                 <Typography>
-                <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
+                    <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
                         <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.userName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
                     </IconButton>
                 </Typography>

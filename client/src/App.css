@@ -419,6 +419,7 @@ input {
 
 .dialog-header {
   font-size: 24pt;
+  text-align: center;
 }
 
 #close-modal-button {

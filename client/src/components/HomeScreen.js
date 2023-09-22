@@ -7,6 +7,7 @@ import MUIDeleteModal from './MUIDeleteModal'
 import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab'
+import ListEditFail from './ListEditFail';
 import Grid from '@mui/material/Grid';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
@@ -103,7 +104,7 @@ const HomeScreen = () => {
 		if(store.idNamePairs)
 		{
 			newIdNamePairs = store.idNamePairs
-
+			
 			newIdNamePairs = newIdNamePairs.filter(function (playlist) {
 				return (!(playlist.ownerUserName !== auth.user.userName && !playlist.published))
 			});
@@ -341,6 +342,7 @@ const HomeScreen = () => {
 					listCard
 				}
 				<MUIDeleteModal />
+				<ListEditFail />
 			</div>
 		</div>)
 }
