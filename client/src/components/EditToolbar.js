@@ -17,6 +17,7 @@ import { useHistory } from 'react-router-dom'
 function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+    const guestUserName = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
 
     function handleAddNewSong(event) {
         event.stopPropagation();
@@ -42,7 +43,7 @@ function EditToolbar() {
         store.duplicateList(store.currentList._id)
     }
     let toolbar = ""
-    if (store)
+    if (store && auth.user.userName !== guestUserName)
     {
         if (store.currentList)
         {

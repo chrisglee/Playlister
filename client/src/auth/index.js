@@ -140,10 +140,16 @@ function AuthContextProvider(props) {
 
     auth.getUserInitials = function() {
         let initials = "";
+        const guestUserName = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
         if (auth.user) {
             initials += auth.user.firstName.charAt(0);
             initials += auth.user.lastName.charAt(0);
+            if (auth.user.userName === guestUserName)
+            {
+                initials = "GUEST"
+            }
         }
+
         console.log("user initials: " + initials);
         return initials;
     }

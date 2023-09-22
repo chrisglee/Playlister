@@ -38,7 +38,8 @@ export const GlobalStoreActionType = {
     CHANGE_SEARCH_CRITERIA: "CHANGE_SEARCH_CRITERIA",
     CHANGE_SORT_TYPE: "CHANGE_SORT_TYPE",
     UPDATE_PLAYLIST: "UPDATE PLAYLIST",
-    ERROR_CHANGE_LIST_NAME : "ERROR_CHANGE_LIST_NAME"
+    ERROR_CHANGE_LIST_NAME : "ERROR_CHANGE_LIST_NAME",
+    LOGIN_AS_GUEST : "LOGIN_AS_GUEST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -443,6 +444,24 @@ function GlobalStoreContextProvider(props) {
                     currentEditString: null
                 });
             }
+            case GlobalStoreActionType.LOGIN_AS_GUEST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: [],
+                    currentList: null,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    newListCounter: 0,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentExpandedList: null,
+                    currentPage: CurrentPage.SEARCH_BY_PLAYLIST,
+                    currentSearchCriteria: null,
+                    currentSortType: CurrentSort.NONE,
+                    currentEditString: null
+                });
+            }
 
             default:
                 return store;
@@ -496,7 +515,6 @@ function GlobalStoreContextProvider(props) {
                                     storeReducer({
                                         type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                         payload: {
-                                            idNamePairs: pairsArray,
                                             playlist: playlist,
                                             text: newName
                                         }
@@ -1309,6 +1327,14 @@ function GlobalStoreContextProvider(props) {
             }
         }
         updateAttributePlaylist(id, user, updateType, commentContent);
+    }
+
+    store.loginAsGuest = function (sortType)
+    {
+        storeReducer({
+            type: GlobalStoreActionType.LOGIN_AS_GUEST,
+            payload: null
+        });
     }
 
     return (

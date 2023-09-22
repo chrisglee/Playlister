@@ -27,6 +27,8 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
+    const guestUserName = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
+
 
     useEffect(() => {
 		if (store.currentEditString === null)
@@ -92,7 +94,7 @@ function ListCard(props) {
 
     function handleClick(event) {
         // DOUBLE CLICK IS FOR PLAYLIST EDIT NAME
-            if (event.detail === 2 && auth.user.userName === store.currentList.ownerUserName) {
+            if (event.detail === 2 && auth.user.userName === store.currentList.ownerUserName && !store.currentList.published) {
                 handleToggleEdit(event)
             }
     }
@@ -100,8 +102,14 @@ function ListCard(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            // toggleEdit();
+            if (text === "" || idNamePair.name === text)
+            {
+                setEditActive(false)
+            }
+            else
+            {
+                store.changeListName(id, text);
+            }
         }
     }
     function handleUpdateText(event) {
@@ -173,6 +181,36 @@ function ListCard(props) {
             </IconButton>
         }
     }
+
+    let thumbUp =
+    <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
+        <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.userName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
+    </IconButton>
+
+    if (auth.user.userName === guestUserName)
+    {
+        thumbUp=
+        <IconButton disabled={true}>
+            <ThumbUpIcon style={{fontSize:'24pt', color: 'gray'}}></ThumbUpIcon>
+        </IconButton>
+    }
+
+    let thumbDown = 
+    <IconButton onClick={(event) => {handleDislike(event, idNamePair._id)}}>
+        <ThumbDownIcon style={{fontSize:'24pt', color: idNamePair.userDislikes.includes(auth.user.userName) ? '#f44336' : 'black'}}></ThumbDownIcon>
+    </IconButton>
+
+    
+    if (auth.user.userName === guestUserName)
+    {   
+        thumbDown=
+        <IconButton disabled={true}>
+            <ThumbDownIcon style={{fontSize:'24pt', color: 'gray'}}></ThumbDownIcon>
+        </IconButton>
+    }
+
+
+
     
     let cardElement =
         <ListItem
@@ -188,9 +226,7 @@ function ListCard(props) {
                 </Grid>
                 <Grid item xs={1}>
                 <Typography>
-                    <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
-                        <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.userName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
-                    </IconButton>
+                    {thumbUp}
                 </Typography>
                 </Grid>
                 <Grid item xs={1}>
@@ -198,9 +234,7 @@ function ListCard(props) {
                 </Grid>
                 <Grid item xs={1}>
                 <Typography>
-                    <IconButton onClick={(event) => {handleDislike(event, idNamePair._id)}}>
-                        <ThumbDownIcon style={{fontSize:'24pt', color: idNamePair.userDislikes.includes(auth.user.userName) ? '#f44336' : 'black'}}></ThumbDownIcon>
-                    </IconButton>
+                    {thumbDown}
                 </Typography>
                 </Grid>
                 <Grid item xs={1}>

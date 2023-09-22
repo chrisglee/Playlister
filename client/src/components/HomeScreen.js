@@ -37,6 +37,7 @@ const HomeScreen = () => {
 	const { auth } = useContext(AuthContext);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isMenuOpen = Boolean(anchorEl);
+	const guestUserName = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
 
 	useEffect(() => {
 		store.loadIdNamePairs();
@@ -228,6 +229,19 @@ const HomeScreen = () => {
 			sortText = store.currentSortType;
 		}
 	}
+
+	let homeIcon = 
+	<IconButton onClick={() => {changeCurrentPage("HOME_PAGE")}}>
+		<HomeIcon style={{ color: store.currentPage === "HOME_PAGE" ? '#7CFC00' : 'black'}}></HomeIcon>
+	</IconButton>
+
+	if (auth.user.userName === guestUserName)
+	{
+		homeIcon = 
+		<IconButton disabled={true}>
+			<HomeIcon style={{ color: 'red'}}></HomeIcon>
+		</IconButton>
+	}
 	
 
 	if (store) {
@@ -235,9 +249,7 @@ const HomeScreen = () => {
 			<Grid container>
 				<Grid item xs={12}>
     				<Toolbar sx={{bgcolor: '#3d5a80'}} variant="dense">
-						<IconButton onClick={() => {changeCurrentPage("HOME_PAGE")}}>
-							<HomeIcon style={{ color: store.currentPage === "HOME_PAGE" ? '#7CFC00' : 'black'}}></HomeIcon>
-						</IconButton>
+						{homeIcon}
 						<IconButton onClick={() => {changeCurrentPage("SEARCH_BY_PLAYLIST")}}>
 							<GroupsIcon style={{ marginRight: '2%', color: store.currentPage === "SEARCH_BY_PLAYLIST" ? '#7CFC00' : 'black' }} ></GroupsIcon>
 						</IconButton>
@@ -320,9 +332,9 @@ const HomeScreen = () => {
 							</List>
 							<TextField
 							fullWidth
-							label={!store.currentList ? "Unable to Add Comment" : "Add Comment"}
+							label={!store.currentList || auth.user.userName === guestUserName ? "Unable to Add Comment" : "Add Comment"}
 							variant="filled"
-							disabled={!store.currentList}
+							disabled={!store.currentList || auth.user.userName === guestUserName}
 							value={commentText}
 							onKeyPress={handleCommentKeyPress}
 							onChange={handleUpdateCommentText}>

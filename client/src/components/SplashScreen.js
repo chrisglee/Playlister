@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { GlobalStoreContext } from '../store'
+
 
 import AuthContext from '../auth';
 import Button from '@mui/material/Button';
@@ -9,13 +11,14 @@ import Logo from '../images/logo.png'
 export default function SplashScreen() {
 
     const { auth } = useContext(AuthContext);
-    const history = useHistory();
+    const { store } = useContext(GlobalStoreContext);
+
 
     function loginAsGuest()
     {
-        auth.loggedIn = true;
-        auth.user = null;
-        history.push("/");
+        let guest = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
+        auth.registerUser(guest,guest,guest,guest,guest,guest)
+        store.loginAsGuest()
     }
 
     return (

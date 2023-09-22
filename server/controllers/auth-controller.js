@@ -98,6 +98,7 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
+        const guest = "LvpDwRfQSyohcKXDY2KXnb3PSu4DcXrExni4wcycFqS1cCWcyRO60Qa9edp13W4"
         const { userName, firstName, lastName, email, password, passwordVerify } = req.body;
         console.log("create user: " + userName + " " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
         if (!userName || !firstName || !lastName || !email || !password || !passwordVerify) {
@@ -124,7 +125,7 @@ registerUser = async (req, res) => {
         console.log("password and password verify match");
         const existingUser = await User.findOne({ email: email });
         console.log("existingUser: " + existingUser);
-        if (existingUser) {
+        if (existingUser && userName !== guest) {
             return res
                 .status(400)
                 .json({
@@ -133,7 +134,7 @@ registerUser = async (req, res) => {
                 })
         }
         const existingUserName = await User.findOne({ userName: userName });
-        if (existingUserName) {
+        if (existingUserName && userName !== guest) {
             return res
                 .status(400)
                 .json({
@@ -147,31 +148,104 @@ registerUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         console.log("passwordHash: " + passwordHash);
 
-        const newUser = new User({
-            userName, firstName, lastName, email, passwordHash
-        });
-        const savedUser = await newUser.save();
-        console.log("new user saved: " + savedUser._id);
+        if (existingUser)
+        {
+            if (existingUserName.userName !== guest) //if existing user is not guest then register
+            {
+                const newUser = new User({
+                    userName, firstName, lastName, email, passwordHash
+                });
+                const savedUser = await newUser.save();
+                console.log("new user saved: " + savedUser._id);
+
+                // LOGIN THE USER
+                const token = auth.signToken(savedUser._id);
+                console.log("token:" + token);
+
+                await res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none"
+                }).status(200).json({
+                    success: true,
+                    user: {
+                        userName: savedUser.userName,
+                        firstName: savedUser.firstName,
+                        lastName: savedUser.lastName,  
+                        email: savedUser.email              
+                    }
+                })
+                console.log("token sent");
+            }
+            else //if existing user is guest then login
+            {
+                const token = auth.signToken(existingUser._id);
+                console.log(token);
+        
+                res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: true
+                }).status(200).json({
+                    success: true,
+                    user: {
+                        userName: existingUser.userName,
+                        firstName: existingUser.firstName,
+                        lastName: existingUser.lastName,  
+                        email: existingUser.email              
+                    }
+                })
+            }
+        }
+        else //if no existing user, then register
+        {
+            const newUser = new User({
+                userName, firstName, lastName, email, passwordHash
+            });
+            const savedUser = await newUser.save();
+            console.log("new user saved: " + savedUser._id);
+
+            // LOGIN THE USER
+            const token = auth.signToken(savedUser._id);
+            console.log("token:" + token);
+
+            await res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).status(200).json({
+                success: true,
+                user: {
+                    userName: savedUser.userName,
+                    firstName: savedUser.firstName,
+                    lastName: savedUser.lastName,  
+                    email: savedUser.email              
+                }
+            })
+            console.log("token sent");   
+        }
+
+
 
         // LOGIN THE USER
-        const token = auth.signToken(savedUser._id);
-        console.log("token:" + token);
+        // const token = auth.signToken(savedUser._id);
+        // console.log("token:" + token);
 
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
-            success: true,
-            user: {
-                userName: savedUser.userName,
-                firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email              
-            }
-        })
+        // await res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none"
+        // }).status(200).json({
+        //     success: true,
+        //     user: {
+        //         userName: savedUser.userName,
+        //         firstName: savedUser.firstName,
+        //         lastName: savedUser.lastName,  
+        //         email: savedUser.email              
+        //     }
+        // })
 
-        console.log("token sent");
+        // console.log("token sent");
 
     } catch (err) {
         console.error(err);
