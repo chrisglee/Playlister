@@ -79,8 +79,17 @@ body {
 
 #edit-toolbar {
   background-color: transparent;
+}
+
+#playlist-toolbar {
+  float: left;
+}
+
+#playlist-actions {
   float: right;
 }
+
+#playlist-actions
 
 .top5-button,
 .top5-button-disabled {

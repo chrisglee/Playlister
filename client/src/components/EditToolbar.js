@@ -31,8 +31,14 @@ function EditToolbar() {
         history.push("/");
         store.closeCurrentList();
     }
+    async function handleDeleteList() 
+    {
+        console.log("delete-list-" + store.currentList._id);
+        store.markListForDeletion(store.currentList._id);
+    }
     return (
         <div id="edit-toolbar">
+            <div id = "playlist-toolbar">
             <Button
                 disabled={!store.canAddNewSong() || store.currentModal !== "NONE"}
                 id='add-song-button'
@@ -54,13 +60,25 @@ function EditToolbar() {
                 variant="contained">
                     <RedoIcon />
             </Button>
-            <Button 
-                disabled={!store.canClose() || store.currentModal !== "NONE"}
-                id='close-button'
-                onClick={handleClose}
+            </div>
+            <div id = "playlist-actions">
+            <Button
+                id='publish-playlist-button'
                 variant="contained">
-                    <CloseIcon />
+                Publish
             </Button>
+            <Button
+                id='delete-playlist-button'
+                onClick={handleDeleteList}
+                variant="contained">
+                Delete
+            </Button>
+            <Button
+                id='duplicate-playlist-button'
+                variant="contained">
+                Duplicate
+            </Button>
+            </div>
         </div>
     )
 }

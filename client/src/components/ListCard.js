@@ -143,7 +143,7 @@ function ListCard(props) {
                 <Typography style={{fontSize:'24pt'}}> 0 </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                <Typography style={{fontSize:'12pt'}}> By: Artist </Typography>
+                <Typography style={{fontSize:'12pt'}}> By: User </Typography>
                 </Grid>
                 <Grid item xs={12}>
                 {workspaceToggle}
