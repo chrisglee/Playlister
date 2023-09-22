@@ -482,6 +482,25 @@ function GlobalStoreContextProvider(props) {
                     currentEditString: null
                 });
             }
+            
+            case GlobalStoreActionType.DELETE_MARKED_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: payload,
+                    currentList: null,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentExpandedList: null,
+                    currentPage: store.currentPage,
+                    currentSearchCriteria: store.currentSearchCriteria,
+                    currentSortType: store.currentSortType,
+                    currentEditString: null
+                });
+            }
 
             default:
                 return store;
@@ -802,8 +821,90 @@ function GlobalStoreContextProvider(props) {
             let response = await api.deletePlaylistById(id);
             console.log(response)
             if (response.data.success) {
-                store.loadIdNamePairs();
-                history.push("/");
+                async function getListPairs(playlist) {
+                    if (store.currentPage === CurrentPage.HOME_PAGE)
+                    {
+                        response = await api.getPlaylistPairs();
+                    }
+                    else
+                    {
+                        response = await api.getAllPlaylists();
+                    }
+                    if (response.data.success) 
+                    {
+                        let pairsArray = response.data.idNamePairs;
+                        if (store.currentSearchCriteria !== null)
+                        {
+                            if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
+                            {
+                                pairsArray = pairsArray.filter(function (playlist) {
+                                    return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                    });
+                            }
+                            else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
+                            {
+                                pairsArray = pairsArray.filter(function (playlist) {
+                                    return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                    });
+                            }
+                        }
+                        switch (store.currentSortType)
+                        {
+                            case CurrentSort.CREATION_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
+                                break;
+                            }
+                            case CurrentSort.LAST_EDIT_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
+                                break;
+                            }
+                            case CurrentSort.NAME:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
+                                break;
+                            }
+                            case CurrentSort.PUBLISH_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
+                                break;
+                            }
+                            case CurrentSort.LISTENS:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
+                                break;
+                            }
+                            case CurrentSort.LIKES:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
+                                break;
+                            }
+                            case CurrentSort.DISLIKES:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
+                                break;
+                            }
+                            default: //usually defualt is null anyways
+                            {
+                                pairsArray = pairsArray //bsaically no change
+                            }
+                        }
+                        if (store.currentSearchCriteria === "")
+                        {
+                            pairsArray = []
+                        }
+                        storeReducer({
+                        type: GlobalStoreActionType.DELETE_MARKED_LIST,
+                        payload: pairsArray
+                        });
+                    }
+                    else
+                    {
+                        console.log("API FAILED TO GET THE LIST PAIRS");
+                    }
+                }
+                getListPairs();
             }
         }
         processDelete(id);

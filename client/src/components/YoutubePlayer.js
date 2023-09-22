@@ -18,7 +18,6 @@ export default function YouTubePlayer(props) {
     let [currentSong, setCurrentSong] = useState(0);
 
     useEffect(() => {
-        console.log(store.currentList)
         setCurrentSong(0)
 	}, [store.currentList]);
 
