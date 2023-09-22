@@ -587,94 +587,7 @@ function GlobalStoreContextProvider(props) {
                     async function updateList(playlist) {
                         response = await api.updatePlaylistById(playlist._id, playlist);
                         if (response.data.success) {
-                            async function getListPairs(playlist) {
-                                if (store.currentPage === CurrentPage.HOME_PAGE)
-                                {
-                                    response = await api.getPlaylistPairs();
-                                }
-                                else
-                                {
-                                    response = await api.getAllPlaylists();
-                                }
-                                if (response.data.success) 
-                                {
-                                    let pairsArray = response.data.idNamePairs;
-                                    if (store.currentSearchCriteria !== null)
-                                    {
-                                        if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
-                                        {
-                                            pairsArray = pairsArray.filter(function (playlist) {
-                                                return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                                });
-                                        }
-                                        else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-                                        {
-                                            pairsArray = pairsArray.filter(function (playlist) {
-                                                return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                                });
-                                        }
-                                    }
-                                    switch (store.currentSortType)
-                                    {
-                                        case CurrentSort.CREATION_DATE:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
-                                            break;
-                                        }
-                                        case CurrentSort.LAST_EDIT_DATE:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
-                                            break;
-                                        }
-                                        case CurrentSort.NAME:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
-                                            break;
-                                        }
-                                        case CurrentSort.PUBLISH_DATE:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
-                                            break;
-                                        }
-                                        case CurrentSort.LISTENS:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
-                                            break;
-                                        }
-                                        case CurrentSort.LIKES:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
-                                            break;
-                                        }
-                                        case CurrentSort.DISLIKES:
-                                        {
-                                            pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
-                                            break;
-                                        }
-                                        default: //usually defualt is null anyways
-                                        {
-                                            pairsArray = pairsArray //bsaically no change
-                                        }
-                                    }
-                                    if (store.currentSearchCriteria === "")
-                                    {
-                                        pairsArray = []
-                                    }
-                                    storeReducer({
-                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                    payload: 
-                                    {
-                                        playlist: playlist,
-                                        text: null
-                                    }
-                                    });
-                                }
-                                else
-                                {
-                                    console.log("API FAILED TO GET THE LIST PAIRS");
-                                }
-                            }
-                            getListPairs(playlist);
+                            store.loadIdNamePairs("CHANGE_LIST_NAME", playlist)
                         }
                     }
                 }
@@ -743,9 +656,9 @@ function GlobalStoreContextProvider(props) {
 
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
-    store.loadIdNamePairs = async function () 
+    store.loadIdNamePairs = async function (type, playlist, id) //DEFAULT //DELETE_MARKED_LIST
     {
-        async function asyncLoadIdNamePairs() 
+        async function asyncLoadIdNamePairs(type, playlist, id) 
         {
             let response = ""
             if (store.currentPage === CurrentPage.HOME_PAGE)
@@ -811,30 +724,100 @@ function GlobalStoreContextProvider(props) {
                         pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
                         break;
                     }
-                    default: //usually defualt is null anyways
-                    {
-                        pairsArray = pairsArray //bsaically no change
-                    }
-                    }
-                    if (store.currentSearchCriteria === "")
-                    {
-                        pairsArray = []
-                    }
-                storeReducer({
-                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: 
-                {
-                    pairsArray: pairsArray,
-                    length: pairsArray.length
+                    default: //usually default is null anyways
+                    {}
                 }
-                });
+                switch (type)
+                {
+                    case "DELETE_MARKED_LIST":
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.DELETE_MARKED_LIST,
+                            payload: pairsArray
+                            });
+                        break;
+                    }
+                    case "PUBLISH_LIST":
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.PUBLISH_LIST,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                playlist: playlist
+                            }
+                        });
+                        break;
+                    }
+                    case "SET_EXPAND_LIST":
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.SET_EXPAND_LIST,
+                            payload: 
+                            {
+                                pairsArray: pairsArray,
+                                playlist: playlist,
+                                id: id
+                            }
+                            }); 
+                        break;
+                    }
+                    case "CHANGE_LIST_NAME":
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                            payload: 
+                            {
+                                playlist: playlist,
+                                text: null
+                            }
+                            });
+                        break;
+                    }
+                    case "UPDATE_PLAYLIST_LISTENS_SAME":
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                            payload: 
+                            {
+                                pairsArray: pairsArray,
+                                playlist: playlist,
+                                expandedPlaylist: store.currentExpandedList
+                            }
+                            });
+                        break;
+                    }
+                    case "UPDATE_PLAYLIST_LISTENS_INCREMENT":
+                        {
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_PLAYLIST,
+                                payload: 
+                                {
+                                    pairsArray: pairsArray,
+                                    playlist: playlist,
+                                    expandedPlaylist: null
+                                }
+                                });
+                            break;
+                        }
+                    default: 
+                    {
+                        storeReducer({
+                            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                            payload: 
+                            {
+                                pairsArray: pairsArray,
+                                length: pairsArray.length
+                            }
+                        });
+                    }
+                }
             }
             else
             {
                 console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
-        asyncLoadIdNamePairs();
+        asyncLoadIdNamePairs(type, playlist, id);
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
@@ -857,91 +840,9 @@ function GlobalStoreContextProvider(props) {
     store.deleteList = function (id) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
-            if (response.data.success) {
-                async function getListPairs(playlist) {
-                    if (store.currentPage === CurrentPage.HOME_PAGE)
-                    {
-                        response = await api.getPlaylistPairs();
-                    }
-                    else
-                    {
-                        response = await api.getAllPlaylists();
-                    }
-                    if (response.data.success) 
-                    {
-                        let pairsArray = response.data.idNamePairs;
-                        if (store.currentSearchCriteria !== null)
-                        {
-                            if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
-                            {
-                                pairsArray = pairsArray.filter(function (playlist) {
-                                    return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                    });
-                            }
-                            else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-                            {
-                                pairsArray = pairsArray.filter(function (playlist) {
-                                    return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                    });
-                            }
-                        }
-                        switch (store.currentSortType)
-                        {
-                            case CurrentSort.CREATION_DATE:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
-                                break;
-                            }
-                            case CurrentSort.LAST_EDIT_DATE:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
-                                break;
-                            }
-                            case CurrentSort.NAME:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
-                                break;
-                            }
-                            case CurrentSort.PUBLISH_DATE:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
-                                break;
-                            }
-                            case CurrentSort.LISTENS:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
-                                break;
-                            }
-                            case CurrentSort.LIKES:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
-                                break;
-                            }
-                            case CurrentSort.DISLIKES:
-                            {
-                                pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
-                                break;
-                            }
-                            default: //usually defualt is null anyways
-                            {
-                                pairsArray = pairsArray //bsaically no change
-                            }
-                        }
-                        if (store.currentSearchCriteria === "")
-                        {
-                            pairsArray = []
-                        }
-                        storeReducer({
-                        type: GlobalStoreActionType.DELETE_MARKED_LIST,
-                        payload: pairsArray
-                        });
-                    }
-                    else
-                    {
-                        console.log("API FAILED TO GET THE LIST PAIRS");
-                    }
-                }
-                getListPairs();
+            if (response.data.success) 
+            {
+                store.loadIdNamePairs("DELETE_MARKED_LIST");
             }
         }
         processDelete(id);
@@ -1145,37 +1046,24 @@ function GlobalStoreContextProvider(props) {
     // NEW FUNCTIONS
 
     // THIS FUNCTION PUBLISHES A LIST USING ITS ID
-    store.publishList = function (id, date) {
+    store.publishList = function (id) {
         // GET THE LIST
-        async function asyncPublishList(id, date) {
+        async function asyncPublishList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
                 playlist.published = true;
-                playlist.publishDate = date;
+                playlist.publishDate = Date.now();
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            response = await api.getPlaylistPairs();
-                            if (response.data.success) {
-                                let pairsArray = response.data.idNamePairs;
-                                storeReducer({
-                                    type: GlobalStoreActionType.PUBLISH_LIST,
-                                    payload: {
-                                        idNamePairs: pairsArray,
-                                        playlist: playlist
-                                    }
-                                });
-                            }
-                        }
-                        getListPairs(playlist);
+                        store.loadIdNamePairs("PUBLISH_LIST", playlist)
                     }
                 }
                 updateList(playlist);
             }
         }
-        asyncPublishList(id, date);
+        asyncPublishList(id);
     }
     
     //THIS FUNCTION SETS THE CURRENT EXPANDED LIST, this is so sad that this has to be overloaded
@@ -1198,95 +1086,7 @@ function GlobalStoreContextProvider(props) {
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            if (store.currentPage === CurrentPage.HOME_PAGE)
-                            {
-                                response = await api.getPlaylistPairs();
-                            }
-                            else
-                            {
-                                response = await api.getAllPlaylists();
-                            }
-                            if (response.data.success) 
-                            {
-                                let pairsArray = response.data.idNamePairs;
-                                if (store.currentSearchCriteria !== null)
-                                {
-                                    if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
-                                    {
-                                        pairsArray = pairsArray.filter(function (playlist) {
-                                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                            });
-                                    }
-                                    else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-                                    {
-                                        pairsArray = pairsArray.filter(function (playlist) {
-                                            return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                            });
-                                    }
-                                }
-                                switch (store.currentSortType)
-                                {
-                                    case CurrentSort.CREATION_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
-                                        break;
-                                    }
-                                    case CurrentSort.LAST_EDIT_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
-                                        break;
-                                    }
-                                    case CurrentSort.NAME:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
-                                        break;
-                                    }
-                                    case CurrentSort.PUBLISH_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
-                                        break;
-                                    }
-                                    case CurrentSort.LISTENS:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
-                                        break;
-                                    }
-                                    case CurrentSort.LIKES:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
-                                        break;
-                                    }
-                                    case CurrentSort.DISLIKES:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
-                                        break;
-                                    }
-                                    default: //usually defualt is null anyways
-                                    {
-                                        pairsArray = pairsArray //bsaically no change
-                                    }
-                                }
-                                if (store.currentSearchCriteria === "")
-                                {
-                                    pairsArray = []
-                                }
-                                storeReducer({
-                                type: GlobalStoreActionType.SET_EXPAND_LIST,
-                                payload: 
-                                {
-                                    pairsArray: pairsArray,
-                                    playlist: playlist,
-                                    id: id
-                                }
-                                });
-                            }
-                            else
-                            {
-                                console.log("API FAILED TO GET THE LIST PAIRS");
-                            }
-                        }
-                        getListPairs(playlist);
+                        store.loadIdNamePairs("SET_EXPAND_LIST", playlist, id)
                     }
                 }
                 updateList(playlist);
@@ -1396,16 +1196,6 @@ function GlobalStoreContextProvider(props) {
                 let flag = false
                 if (updateType === UpdateType.LIKES)
                 {
-                    if (store.currentList === null)
-                    {
-                        playlist.listens++
-                        flag = true
-                    }
-                    else if (store.currentList._id !== id)
-                    {
-                        playlist.listens++
-                        flag = true
-                    }
                     if (!playlist.userLikes.includes(user))
                     {
                         playlist.userLikes.push(user)
@@ -1426,16 +1216,6 @@ function GlobalStoreContextProvider(props) {
                 } 
                 if (updateType === UpdateType.DISLIKES)
                 {
-                    if (store.currentList === null)
-                    {
-                        playlist.listens++
-                        flag = true
-                    }
-                    else if (store.currentList._id !== id)
-                    {
-                        playlist.listens++
-                        flag = true
-                    }
                     if (!playlist.userDislikes.includes(user))
                     {
                         playlist.userDislikes.push(user)
@@ -1462,119 +1242,25 @@ function GlobalStoreContextProvider(props) {
                     };
                     playlist.comments.push(commentTuple);
                 }
-                if (updateType === UpdateType.LISTENS)
+                if (updateType === UpdateType.LIKES || updateType === UpdateType.DISLIKES || updateType === UpdateType.LISTENS)
                 {
-                    playlist.listens++;
-                    flag = true;
+                    if (store.currentList === null || store.currentList._id !== id)
+                    {
+                        playlist.listens++
+                        flag = true;
+                    }
                 }
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            if (store.currentPage === CurrentPage.HOME_PAGE)
-                            {
-                                response = await api.getPlaylistPairs();
-                            }
-                            else
-                            {
-                                response = await api.getAllPlaylists();
-                            }
-                            if (response.data.success) 
-                            {
-                                let pairsArray = response.data.idNamePairs;
-                                if (store.currentSearchCriteria !== null)
-                                {
-                                    if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
-                                    {
-                                        pairsArray = pairsArray.filter(function (playlist) {
-                                            return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                            });
-                                    }
-                                    else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
-                                    {
-                                        pairsArray = pairsArray.filter(function (playlist) {
-                                            return (playlist.ownerUserName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
-                                            });
-                                    }
-                                }
-                                switch (store.currentSortType)
-                                {
-                                    case CurrentSort.CREATION_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
-                                        break;
-                                    }
-                                    case CurrentSort.LAST_EDIT_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
-                                        break;
-                                    }
-                                    case CurrentSort.NAME:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
-                                        break;
-                                    }
-                                    case CurrentSort.PUBLISH_DATE:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
-                                        break;
-                                    }
-                                    case CurrentSort.LISTENS:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
-                                        break;
-                                    }
-                                    case CurrentSort.LIKES:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
-                                        break;
-                                    }
-                                    case CurrentSort.DISLIKES:
-                                    {
-                                        pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
-                                        break;
-                                    }
-                                    default: //usually defualt is null anyways
-                                    {
-                                        pairsArray = pairsArray //bsaically no change
-                                    }
-                                }
-                                if (store.currentSearchCriteria === "")
-                                {
-                                    pairsArray = []
-                                }
-                                if (flag === false)
-                                {
-                                    storeReducer({
-                                        type: GlobalStoreActionType.UPDATE_PLAYLIST,
-                                        payload: 
-                                        {
-                                            pairsArray: pairsArray,
-                                            playlist: playlist,
-                                            expandedPlaylist: store.currentExpandedList
-                                        }
-                                        });
-                                }
-                                else
-                                {
-                                    storeReducer({
-                                        type: GlobalStoreActionType.UPDATE_PLAYLIST,
-                                        payload: 
-                                        {
-                                            pairsArray: pairsArray,
-                                            playlist: playlist,
-                                            expandedPlaylist: null
-                                        }
-                                        });
-                                }
-
-                            }
-                            else
-                            {
-                                console.log("API FAILED TO GET THE LIST PAIRS");
-                            }
+                        if (!flag)
+                        {
+                            store.loadIdNamePairs("UPDATE_PLAYLIST_LISTENS_SAME", playlist)
                         }
-                        getListPairs(playlist);
+                        else
+                        {
+                            store.loadIdNamePairs("UPDATE_PLAYLIST_LISTENS_INCREMENT", playlist)
+                        }
                     }
                 }
                 updateList(playlist);
