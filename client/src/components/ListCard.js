@@ -3,6 +3,7 @@ import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import EditToolbar from './EditToolbar'
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
@@ -103,7 +104,12 @@ function ListCard(props) {
                     <KeyboardDoubleArrowUpIcon />
                 </IconButton>
             </Box>
-            workspaceToggle = <WorkspaceScreen />
+            workspaceToggle = 
+            <Box>
+                <WorkspaceScreen />
+                <EditToolbar />
+            </Box>
+            
         }
         else
         {

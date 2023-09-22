@@ -74,7 +74,7 @@ function WorkspaceScreen() {
                         index={index}
                         song={song}
                     />
-                ))  
+                )) 
             }
          </List>   
     }
