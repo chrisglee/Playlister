@@ -220,7 +220,7 @@ updatePlaylist = async (req, res) => {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
+                if (user._id == req.userId || user._id != req.userId ) {
                     console.log("correct user!");
                     console.log("req.body.name: " + req.body.name);
 
@@ -257,10 +257,14 @@ updatePlaylist = async (req, res) => {
                             })
                         })
                 }
-                else {
-                    console.log("incorrecta user!");
-                    return res.status(400).json({ success: false, description: "authentication error" });
-                }
+                // else {
+                //     console.log("Another user updating someone's else playlist!");
+                //     return res.status(200).json({
+                //         success: true,
+                //         id: list._id,
+                //         message: 'Playlist updated!',
+                //     })
+                // }
             });
         }
         asyncFindUser(playlist);

@@ -28,10 +28,6 @@ function EditToolbar() {
     function handleRedo() {
         store.redo();
     }
-    function handleClose() {
-        history.push("/");
-        store.closeCurrentList();
-    }
     async function handlePublishList() 
     {
         let date = Date.now();

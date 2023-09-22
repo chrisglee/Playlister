@@ -17,7 +17,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PersonIcon from '@mui/icons-material/Person';
-import SortIcon from "@mui/icons-material/Sort";
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
@@ -36,6 +35,7 @@ const HomeScreen = () => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isMenuOpen = Boolean(anchorEl);
 
+	console.log(store.currentPage)
 	const handleTabChange = (event, newTab) => {
 		setCurrentTab(newTab);
 	  };

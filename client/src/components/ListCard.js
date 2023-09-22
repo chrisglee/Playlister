@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react'
+import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,6 +25,7 @@ import WorkspaceScreen from './WorkspaceScreen';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
@@ -104,6 +106,24 @@ function ListCard(props) {
         store.closeExpandList(id);
     }
 
+    function handleLike(event, id)
+    {
+        if (auth)
+        {
+            let user = auth.user.firstName + " " + auth.user.lastName;
+            store.updateAttributePlaylist(id, user, "LIKES");
+        }
+    }
+
+    function handleDislike(event, id)
+    {
+        if (auth)
+        {
+            let user = auth.user.firstName + " " + auth.user.lastName;
+            store.updateAttributePlaylist(id, user, "DISLIKES");
+        }
+    }
+
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
@@ -160,13 +180,21 @@ function ListCard(props) {
                 <Typography style={{fontSize:'24pt'}} onClick={handleClick}> {idNamePair.name} </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography><ThumbUpIcon style={{fontSize:'24pt', marginTop: '6px'}}></ThumbUpIcon></Typography>
+                <Typography>
+                <IconButton onClick={(event) => {handleLike(event, idNamePair._id)}}>
+                        <ThumbUpIcon style={{fontSize:'24pt', color: idNamePair.userLikes.includes(auth.user.firstName + " " + auth.user.lastName) ? '#10a64a' : 'black'}}></ThumbUpIcon>
+                    </IconButton>
+                </Typography>
                 </Grid>
                 <Grid item xs={1}>
                 <Typography style={{fontSize:'24pt' }}> {idNamePair.numLikes} </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                <Typography><ThumbDownIcon style={{fontSize:'24pt', marginTop: '6px'}}></ThumbDownIcon></Typography>
+                <Typography>
+                    <IconButton onClick={(event) => {handleDislike(event, idNamePair._id)}}>
+                        <ThumbDownIcon style={{fontSize:'24pt', color: idNamePair.userDislikes.includes(auth.user.firstName + " " + auth.user.lastName) ? '#f44336' : 'black'}}></ThumbDownIcon>
+                    </IconButton>
+                </Typography>
                 </Grid>
                 <Grid item xs={1}>
                 <Typography style={{fontSize:'24pt' }}> {idNamePair.numDislikes} </Typography>
