@@ -3,12 +3,15 @@ import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import { Collapse } from '@mui/material';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import Typography from '@mui/material/Typography'
 import WorkspaceScreen from './WorkspaceScreen';
 
 /*
@@ -116,18 +119,35 @@ function ListCard(props) {
             sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: '#98c1d9', borderRadius: '16px' }}
             style={{ width: '100%', fontSize: '48pt' }}
         >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {handleDeleteList(event, idNamePair._id)}} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            {iconToggle}
+            <Grid container>
+                <Grid item xs={8}>
+                <Typography style={{fontSize:'24pt'}}> {idNamePair.name} </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                <ThumbUpIcon  style={{fontSize:'24pt'}}></ThumbUpIcon>
+                </Grid>
+                <Grid item xs={1}>
+                <Typography style={{fontSize:'24pt'}}> 0 </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                <ThumbDownIcon style={{fontSize:'24pt'}}></ThumbDownIcon>
+                </Grid>
+                <Grid item xs={1}>
+                <Typography style={{fontSize:'24pt'}}> 0 </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                <Typography style={{fontSize:'12pt'}}> By: </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography style={{fontSize:'8pt'}}> Published: </Typography>
+                </Grid>
+                <Grid item xs={5}>
+                <Typography style={{fontSize:'8pt'}}> Listens: </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                {iconToggle}
+                </Grid>
+            </Grid>
         </ListItem>
 
     if (editActive) {
