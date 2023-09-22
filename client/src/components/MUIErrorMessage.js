@@ -4,6 +4,8 @@ import { AuthContext } from '../auth';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 
 const style = {
     position: 'absolute',
@@ -39,13 +41,13 @@ export default function MUIErroeMessage() {
                 <header className="dialog-header">
                     Error Message
                 </header>
-                {msg}
+                <Alert severity="error">{msg}</Alert>
                 <div id="confirm-cancel-container">
-                    <button
-                        id="dialog-yes-button"
-                        className="modal-button"
+                    <Button
+                        // id="dialog-yes-button"
+                        // className="modal-button"
                         onClick={handleCloseModal}
-                    >Confirm</button>
+                    >Confirm</Button>
                 </div>
             </div>
             </Box>
