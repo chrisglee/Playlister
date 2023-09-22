@@ -118,6 +118,8 @@ const HomeScreen = () => {
 	}
 
 	let menuList = ""
+	let bottomHeader = ""
+	let bottomHeaderText = ""
 	if (store)
 	{
 		if (store.currentPage === "HOME_PAGE")
@@ -128,6 +130,20 @@ const HomeScreen = () => {
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LAST_EDIT_DATE") }}>Last Edit Date (Old - New)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("NAME") }}>Name (A - Z)</MenuItem>
 			</Box>
+
+			bottomHeader =
+			<div id="list-selector-heading">
+			<Fab 
+				color="primary" 
+				aria-label="add"
+				id="add-list-button"
+				onClick={handleCreateNewList}
+				disabled={store.currentModal !== "NONE"}
+			>
+				<AddIcon />
+			</Fab>
+				<Typography variant="h2">Your Lists</Typography>
+			</div>
 		}
 		else if (store.currentPage === "SEARCH_BY_PLAYLIST" || store.currentPage === "SEARCH_BY_USER")
 		{
@@ -139,6 +155,24 @@ const HomeScreen = () => {
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("LIKES") }}>Likes (High - Low)</MenuItem>
 				<MenuItem onClick={ () =>{ handleCloseMenu(); store.changeSortType("DISLIKES") }}>Dislikes (High - Low)</MenuItem>
 			</Box>
+
+			bottomHeaderText = ""
+			if (store.currentSearchCriteria !== null && store.currentSearchCriteria !== "")
+			{
+				if (store.currentPage === "SEARCH_BY_PLAYLIST")
+				{
+					bottomHeaderText = store.currentSearchCriteria + " Playlists"
+				}
+				else if (store.currentPage === "SEARCH_BY_USER")
+				{
+					bottomHeaderText = store.currentSearchCriteria + "'s Lists"
+				}
+			}
+
+			bottomHeader =
+			<div id="list-selector-heading">
+				<Typography variant="h2">{bottomHeaderText}</Typography>
+			</div>
 		}
 	}
 	let player = "";
@@ -266,7 +300,7 @@ const HomeScreen = () => {
        					)}
         				{tabIndex === 1 && (
           				<Box>
-							<List disablePadding sx={{ width: '100%', height: '55.5vh', overflow: "hidden", overflowY: "auto", }}>
+							<List disablePadding sx={{ width: '100%', height: '57.5vh', overflow: "hidden", overflowY: "auto", }}>
 							{
 								commentList
 							}
@@ -289,18 +323,7 @@ const HomeScreen = () => {
 	}
 	return (
 		<div id="playlist-selector">
-			<div id="list-selector-heading">
-			<Fab 
-				color="primary" 
-				aria-label="add"
-				id="add-list-button"
-				onClick={handleCreateNewList}
-				disabled={store.currentModal !== "NONE"}
-			>
-				<AddIcon />
-			</Fab>
-				<Typography variant="h2">Your Lists</Typography>
-			</div>
+			{bottomHeader}
 			<div id="list-selector-list">
 				{
 					listCard

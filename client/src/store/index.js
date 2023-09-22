@@ -218,8 +218,8 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
-                    idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    idNamePairs: payload.pairsArray,
+                    currentList: payload.playlist,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -485,6 +485,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS, AND FILTER LISTS BASED ON SEARCH CRITERIA AND SORTS IT AS WELL
     store.loadIdNamePairs = async function () 
     {
+        console.log("loadIdNamePairs")
         async function asyncLoadIdNamePairs() 
         {
             let response = ""
@@ -518,12 +519,12 @@ function GlobalStoreContextProvider(props) {
                 {
                     case CurrentSort.CREATION_DATE:
                     {
-                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.creationDate) - new Date(list1.creationDate))
+                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
                         break;
                     }
                     case CurrentSort.LAST_EDIT_DATE:
                     {
-                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.lastEditDate) - new Date(list1.lastEditDate))
+                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
                         break;
                     }
                     case CurrentSort.NAME:
@@ -671,6 +672,8 @@ function GlobalStoreContextProvider(props) {
     store.createSong = function(index, song) {
         let list = store.currentList;      
         list.songs.splice(index, 0, song);
+        let date = Date.now();
+        list.lastEditDate = date;
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
@@ -678,6 +681,8 @@ function GlobalStoreContextProvider(props) {
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     store.moveSong = function(start, end) {
         let list = store.currentList;
+        let date = Date.now();
+        list.lastEditDate = date;
 
         // WE NEED TO UPDATE THE STATE FOR THE APP
         if (start < end) {
@@ -703,6 +708,8 @@ function GlobalStoreContextProvider(props) {
     store.removeSong = function(index) {
         let list = store.currentList;      
         list.songs.splice(index, 1); 
+        let date = Date.now();
+        list.lastEditDate = date;
 
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
@@ -714,6 +721,8 @@ function GlobalStoreContextProvider(props) {
         song.title = songData.title;
         song.artist = songData.artist;
         song.youTubeId = songData.youTubeId;
+        let date = Date.now();
+        list.lastEditDate = date;
 
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
@@ -757,12 +766,97 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
-            const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
-            if (response.data.success) {
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: store.currentList
-                });
+            let response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+            if (response.data.success) 
+            {
+                async function getListPairs() {
+                    if (store.currentPage === CurrentPage.HOME_PAGE)
+                    {
+                        response = await api.getPlaylistPairs();
+                    }
+                    else
+                    {
+                        response = await api.getAllPlaylists();
+                    }
+                    if (response.data.success) 
+                    {
+                        let pairsArray = response.data.idNamePairs;
+                        if (store.currentSearchCriteria !== null)
+                        {
+                            if (store.currentPage === CurrentPage.HOME_PAGE || store.currentPage === CurrentPage.SEARCH_BY_PLAYLIST)
+                            {
+                                pairsArray = pairsArray.filter(function (playlist) {
+                                    return playlist.name.toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                    });
+                            }
+                            else if (store.currentPage === CurrentPage.SEARCH_BY_USER)
+                            {
+                                pairsArray = pairsArray.filter(function (playlist) {
+                                    return (playlist.ownerFirstName + " " + playlist.ownerLastName).toLowerCase().includes(store.currentSearchCriteria.toLowerCase())
+                                    });
+                            }
+                        }
+                        switch (store.currentSortType)
+                        {
+                            case CurrentSort.CREATION_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
+                                break;
+                            }
+                            case CurrentSort.LAST_EDIT_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
+                                break;
+                            }
+                            case CurrentSort.NAME:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list1.name.localeCompare(list2.name))
+                                break;
+                            }
+                            case CurrentSort.PUBLISH_DATE:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => new Date(list2.publishDate) - new Date(list1.publishDate))
+                                break;
+                            }
+                            case CurrentSort.LISTENS:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.listens - list1.listens)
+                                break;
+                            }
+                            case CurrentSort.LIKES:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.numLikes - list1.numLikes)
+                                break;
+                            }
+                            case CurrentSort.DISLIKES:
+                            {
+                                pairsArray = pairsArray.sort((list1,list2) => list2.numDislikes - list1.numDislikes)
+                                break;
+                            }
+                            default: //usually defualt is null anyways
+                            {
+                                pairsArray = pairsArray //bsaically no change
+                            }
+                        }
+                        if (store.currentSearchCriteria === "")
+                        {
+                            pairsArray = []
+                        }
+                        storeReducer({
+                        type: GlobalStoreActionType.SET_CURRENT_LIST,
+                        payload: 
+                        {
+                            pairsArray: pairsArray,
+                            playlist: store.currentList,
+                        }
+                        });
+                    }
+                    else
+                    {
+                        console.log("API FAILED TO GET THE LIST PAIRS");
+                    }
+                }
+                getListPairs();
             }
         }
         asyncUpdateCurrentList();
@@ -886,12 +980,12 @@ function GlobalStoreContextProvider(props) {
                                 {
                                     case CurrentSort.CREATION_DATE:
                                     {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.creationDate) - new Date(list1.creationDate))
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
                                         break;
                                     }
                                     case CurrentSort.LAST_EDIT_DATE:
                                     {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.lastEditDate) - new Date(list1.lastEditDate))
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
                                         break;
                                     }
                                     case CurrentSort.NAME:
@@ -1097,12 +1191,12 @@ function GlobalStoreContextProvider(props) {
                                 {
                                     case CurrentSort.CREATION_DATE:
                                     {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.creationDate) - new Date(list1.creationDate))
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.creationDate) - new Date(list2.creationDate))
                                         break;
                                     }
                                     case CurrentSort.LAST_EDIT_DATE:
                                     {
-                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list2.lastEditDate) - new Date(list1.lastEditDate))
+                                        pairsArray = pairsArray.sort((list1,list2) => new Date(list1.lastEditDate) - new Date(list2.lastEditDate))
                                         break;
                                     }
                                     case CurrentSort.NAME:
