@@ -1463,7 +1463,8 @@ function GlobalStoreContextProvider(props) {
                 }
                 if (updateType === UpdateType.LISTENS)
                 {
-                    playlist.listens++
+                    playlist.listens++;
+                    flag = true;
                 }
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
